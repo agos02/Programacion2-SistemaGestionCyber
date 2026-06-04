@@ -6,18 +6,30 @@ public class ReportesControlador {
 
     private ReportesDAO dao = new ReportesDAO();
 
+    
+    //clientes
     public void listarClientes() {
         dao.listarClientes();
     }
-
+    
+     public int cantidadClientes() {
+         return dao.cantidadClientes();
+     }
+    
+    //sesiones
     public void listarSesiones() {
         dao.listarSesiones();
     }
-
+    
+    public void cantidadSesiones() {
+        dao.cantidadSesiones();
+    }
+    
     public void clienteMasSesiones() {
         dao.clienteMasSesiones();
     }
 
+    //computadoras
     public void obtenerComputadoras() {
         dao.obtenerComputadoras();
     }
@@ -25,6 +37,15 @@ public class ReportesControlador {
     public void estadoComputadoras() {
         dao.estadoComputadoras();
     }
+    
+    public void computadorasDisponibles() {
+        dao.computadorasDisponibles();
+    }
+    
+    public void cantidadPorEstado() {
+        dao.cantidadPorEstado();
+    }
+    
     //Cobros
     public void obtenerCobros() {
         dao.obtenerCobros();
@@ -51,10 +72,21 @@ public class ReportesControlador {
         dao.masVendido();
     }
      
-    public void productosPocoStock () {
-        
+    public void pocoStock () {
+        dao.pocoStock();
     }
     
+    public void productoMasCaro() {
+        dao.productoMasCaro();
+    }
+    
+    public void productoMasBarato() {
+        dao.productoMasBarato();
+    }
+    
+    public void valorTotalStock() {
+        dao.valorTotalStock();
+    }
     
     
     

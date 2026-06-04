@@ -1,5 +1,10 @@
 package com.cyber.dao;
 
+import com.cyber.conexion.ConexionBD;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+
 public class ReportesDAO {
 
     //clientes
@@ -9,10 +14,32 @@ public class ReportesDAO {
 
     }
     
-    public void cantidadClientes() {
-        String sql =
-        "SELECT COUNT(*) AS cantidad_clientes " +
-        "FROM clientes;";
+    public int cantidadClientes() {
+
+        int cantidad = 0;
+
+        try {
+            Connection con = ConexionBD.conectar();
+
+            String sql =
+                "SELECT COUNT(*) AS cantidad_clientes " +
+                "FROM clientes";
+
+            PreparedStatement ps = con.prepareStatement(sql);
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                cantidad = rs.getInt("cantidad_clientes");
+            }
+
+            ConexionBD.cerrar(con);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return cantidad;
     }
 
     //sesiones
@@ -57,12 +84,12 @@ public class ReportesDAO {
 
     }
     
-    public void computadorasOcupadas() {
+    public void computadorasDisponibles() {
 
         String sql =
             "SELECT * " +
             "FROM computadoras " +
-            "WHERE estado = 'Ocupada'";
+            "WHERE estado = 'Disponible'";
     }
     
     public void cantidadPorEstado() {

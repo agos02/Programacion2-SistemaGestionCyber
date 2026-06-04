@@ -1,4 +1,5 @@
 com\cyber\controladores\ComputadoraControlador.class
+com\cyber\dao\ReportesDAO.class
 com\cyber\controladores\CobroControlador.class
 com\cyber\controladores\ClienteControlador.class
 com\cyber\modelos\Producto.class
@@ -11,7 +12,10 @@ com\cyber\conexion\ConexionBD.class
 com\cyber\dao\SesionDAO.class
 com\cyber\dao\ComputadoraDAO.class
 com\cyber\dao\ProductoDAO.class
+com\cyber\modelos\Reportes.class
+com\cyber\controladores\ReportesControlador.class
 com\cyber\dao\ClienteDAO.class
 com\cyber\dao\CobroDAO.class
 com\cyber\modelos\Sesion.class
 com\cyber\controladores\ProductoControlador.class
+views\ReportesViews.class
