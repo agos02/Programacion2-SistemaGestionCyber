@@ -1,4 +1,4 @@
-package com.cyber;
+package com.cyber;                                                                 
 
 import com.cyber.conexion.ConexionBD;
 import java.sql.Connection;
@@ -7,7 +7,7 @@ public class SistemaGestionCyber {
 
     public static void main(String[] args) {
         
-        Connection conexion = ConexionBD.conectar();  //Intentamos conectarnos a la base de datos
+        Connection conexion = ConexionBD.getconectar();  //Intentamos conectarnos a la base de datos
 
         if (conexion != null) {     //Verificamos si la conexión funcionó
             System.out.println("La conexión funciona correctamente.");
