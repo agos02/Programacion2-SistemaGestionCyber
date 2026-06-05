@@ -14,8 +14,14 @@ public class ProductoControlador {
     }
     
     public Producto buscarPorId(int id) {
-    return dao.buscarPorId(id);
-}
+    try {
+        return dao.buscarPorId(id);
+    } catch (Exception e) {
+        System.out.println("Error controlador: " + e.getMessage());
+        return null;
+    }
+    }
+    
     public List<Producto> listarProductos() {
         return dao.listar();
     }
@@ -27,4 +33,5 @@ public class ProductoControlador {
     public void modificarProducto(Producto p) {
         dao.modificar(p);
     }
+ 
 }

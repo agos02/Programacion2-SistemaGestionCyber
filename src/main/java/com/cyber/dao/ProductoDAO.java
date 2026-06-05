@@ -1,10 +1,10 @@
 package com.cyber.dao;
 
-import com.cyber.modelos.Producto;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import com.cyber.conexion.ConexionBD;
+import com.cyber.modelos.Producto;
 
 public class ProductoDAO {
 
@@ -77,6 +77,7 @@ public class ProductoDAO {
             PreparedStatement ps = conexion.prepareStatement(sql);
             ps.setInt(1, id);
 
+            
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {

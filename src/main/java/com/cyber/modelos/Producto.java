@@ -7,6 +7,17 @@ public class Producto {
     private double precio;
     private int stock;
 
+public Producto(){
+ }
+
+public Producto(int id, String nombre,double precio, int stock){
+    this.id =id;
+    this.nombre = nombre;
+    this.stock = stock;
+    this.precio = precio;
+    
+}
+
 
 public int getId() {
     return id;
