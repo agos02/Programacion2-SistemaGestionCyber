@@ -107,12 +107,36 @@ public class ReportesDAO {
             "SELECT * FROM cobros ";
     }
     
-    public void ingresosTotales() {
+    
+    public double ingresosTotales() {
+
+    double total = 0;
+
+    try {
+        Connection con = ConexionBD.conectar();
+
         String sql =
             "SELECT SUM(monto_total) AS ingresos_totales " +
             "FROM cobros";
-            
+
+        PreparedStatement ps = con.prepareStatement(sql);
+
+        ResultSet rs = ps.executeQuery();
+
+        if (rs.next()) {
+            total = rs.getDouble("ingresos_totales");
+        }
+
+        ConexionBD.cerrar(con);
+
+    } catch (Exception e) {
+        e.printStackTrace();
     }
+
+    return total;
+}
+    
+    
     
     public void ingresosFormaPago() {
         
@@ -177,12 +201,33 @@ public class ReportesDAO {
             "LIMIT 1";
     }
     
-    public void valorTotalStock() {
+    public double valorTotalStock() {
+
+    double total = 0;
+
+    try {
+        Connection con = ConexionBD.conectar();
 
         String sql =
             "SELECT SUM(stock * precio) AS valor_stock " +
             "FROM productos";
+
+        PreparedStatement ps = con.prepareStatement(sql);
+
+        ResultSet rs = ps.executeQuery();
+
+        if (rs.next()) {
+            total = rs.getDouble("valor_stock");
+        }
+
+        ConexionBD.cerrar(con);
+
+    } catch (Exception e) {
+        e.printStackTrace();
     }
+
+    return total;
+}
     
     
     

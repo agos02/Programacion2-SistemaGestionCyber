@@ -51,7 +51,7 @@ public class ReportesControlador {
         dao.obtenerCobros();
     }
     
-    public void ingresosTotales() {
+    public double ingresosTotales() {
         dao.ingresosTotales();
     }
     
@@ -84,7 +84,7 @@ public class ReportesControlador {
         dao.productoMasBarato();
     }
     
-    public void valorTotalStock() {
+    public double valorTotalStock() {
         dao.valorTotalStock();
     }
     
