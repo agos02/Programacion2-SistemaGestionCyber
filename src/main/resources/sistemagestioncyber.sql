@@ -88,9 +88,11 @@ CREATE TABLE `computadoras` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Dumping data for table `computadoras`
---
+INSERT INTO computadoras(numero_pc, estado)
+VALUES
+(1, 'Libre'),
+(2, 'Libre'),
+(3, 'Libre');
 
 LOCK TABLES `computadoras` WRITE;
 /*!40000 ALTER TABLE `computadoras` DISABLE KEYS */;
