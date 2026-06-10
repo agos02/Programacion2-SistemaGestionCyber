@@ -14,9 +14,9 @@ public class SistemaGestionCyber {
             
             ConexionBD.cerrar(conexion); //Una vez probado, cerramos la conexión inmediatamente
             
-        } else {
+        } 
+        else {
             System.out.println("No se pudo conectar a la base de datos.");
         }
-
     }
 }
