@@ -15,7 +15,6 @@ public class CobroVista extends JFrame {
     private JTextField txtMontoTotal;
     private JComboBox<String> cbxFormaPago;
     private JButton btnConfirmarPago;
-    private JButton btnImprimirTicket;
     private JButton btnCancelar;
     private JTable tblHistorialCobros;
     private DefaultTableModel modeloTabla;
@@ -45,19 +44,19 @@ public class CobroVista extends JFrame {
         JPanel pnlFormulario = new JPanel(new GridLayout(4, 2, 10, 10));
         pnlFormulario.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 
-        // 1. Monto PC (Bloqueado)
+        //Monto PC (Bloqueado)
         pnlFormulario.add(new JLabel("Monto por PC:"));
         txtMontoPC = new JTextField("0.00");
-        txtMontoPC.setEditable(false); // No editable como pide Trello
+        txtMontoPC.setEditable(false);
         pnlFormulario.add(txtMontoPC);
 
-        // 2. Monto Kiosco (Bloqueado)
+        //Monto Kiosco (Bloqueado)
         pnlFormulario.add(new JLabel("Monto por Kiosco:"));
         txtMontoKiosco = new JTextField("0.00");
         txtMontoKiosco.setEditable(false); // No editable
         pnlFormulario.add(txtMontoKiosco);
 
-        // 3. Monto Total (Resaltado)
+        //Monto Total (Resaltado)
         pnlFormulario.add(new JLabel("TOTAL A PAGAR:"));
         txtMontoTotal = new JTextField("0.00");
         txtMontoTotal.setEditable(false);
@@ -65,7 +64,7 @@ public class CobroVista extends JFrame {
         txtMontoTotal.setForeground(new Color(0, 128, 0)); // Color verde oscuro para el dinero
         pnlFormulario.add(txtMontoTotal);
 
-        // 4. Forma de Pago (Selector JComboBox)
+        //Forma de Pago (Selector JComboBox)
         pnlFormulario.add(new JLabel("Forma de Pago:"));
         String[] opcionesPago = {"Efectivo", "Tarjeta de Débito", "Tarjeta de Crédito", "Transferencia / QR"};
         cbxFormaPago = new JComboBox<>(opcionesPago);
@@ -74,11 +73,9 @@ public class CobroVista extends JFrame {
         // --- SECCIÓN CENTRAL: Botones de Acción ---
         JPanel pnlBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 10));
         btnConfirmarPago = new JButton("Confirmar Pago");
-        btnImprimirTicket = new JButton("Imprimir Ticket");
         btnCancelar = new JButton("Cancelar Operación");
 
         pnlBotones.add(btnConfirmarPago);
-        pnlBotones.add(btnImprimirTicket);
         pnlBotones.add(btnCancelar);
 
         // Unimos el formulario y los botones en un panel contenedor para el norte/centro
@@ -131,4 +128,15 @@ public class CobroVista extends JFrame {
     public javax.swing.JComboBox<String> getCbxFormaPago() { return cbxFormaPago; }
     public javax.swing.JButton getBtnConfirmarPago() { return btnConfirmarPago; }
     public javax.swing.JButton getBtnCancelar() { return btnCancelar; }
+    
+    // Método temporal para probar SOLO la interfaz gráfica
+    public static void main(String[] args) {
+        javax.swing.SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                CobroVista vista = new CobroVista();
+                vista.setVisible(true);
+            }
+        });
+    }
 }

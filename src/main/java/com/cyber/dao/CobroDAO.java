@@ -15,7 +15,7 @@ public class CobroDAO {
     //REGISTRAR EL COBRO COMPLETO (Ticket + Productos vendidos)
     public boolean guardar(Cobro c, List<Object[]> productos) {
         String sqlTicket = "INSERT INTO cobros (id_sesion, monto_sesion, monto_productos, monto_total, forma_pago, fecha_pago) VALUES (?, ?, ?, ?, ?, ?)";
-        String sqlDetalle = "INSERT INTO detalle_cobros (id_cobro, id_producto, cantidad) VALUES (?, ?, ?)";
+        String sqlDetalle = "INSERT INTO detalle_cobros (id_ticket, id_producto, cantidad) VALUES (?, ?, ?)";
         
         Connection con = null;
         try {
