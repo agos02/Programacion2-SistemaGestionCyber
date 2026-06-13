@@ -8,10 +8,11 @@ public class ConexionBD {
 
     private static final String URL = "jdbc:mysql://localhost:3306/sistemagestioncyber";
     private static final String USER = "root";  // Usuario con el que ingresamos a MySQL
-    private static final String PASSWORD = "123";  // Contraseña de MySQL Workbench
+    private static final String PASSWORD = "";  // Contraseña de MySQL Workbench
 
     // Intenta conectarse a la base de datos y devuelve esa conexión.
-    public static Connection conectar() {
+    public static Connection conectar()
+    {
         Connection conexion = null; 
         try {                                                    
             conexion = DriverManager.getConnection(URL, USER, PASSWORD);
@@ -24,8 +25,10 @@ public class ConexionBD {
     }
 
     //Método para cerrar la conexión de forma segura desde cualquier DAO
-    public static void cerrar(Connection conexion) {
-        if (conexion != null) {
+    public static void cerrar(Connection conexion)
+    {
+        if (conexion != null)
+        {
             try {
                 conexion.close();
                 System.out.println("Conexión cerrada correctamente.");
