@@ -1,29 +1,21 @@
+
 package com.cyber.dao;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.List;
 import com.cyber.conexion.ConexionBD;
 import com.cyber.modelos.Producto;
 
 public class ProductoDAO {
 
-    Connection conexion;
+    private final Connection conexion = ConexionBD.conectar();
 
-    public ProductoDAO() {
-           
-        //  conexión ya creada
-   
-        conexion = ConexionBD.getconectar();
-    }
-
-    //  INSERTAR
+    // INSERTAR
     public void insertar(Producto p) {
 
         String sql = "INSERT INTO productos(nombre, precio, stock) VALUES (?, ?, ?)";
 
-        try {
-            PreparedStatement ps = conexion.prepareStatement(sql);
+        try (PreparedStatement ps = conexion.prepareStatement(sql)) {
 
             ps.setString(1, p.getNombre());
             ps.setDouble(2, p.getPrecio());
@@ -32,26 +24,25 @@ public class ProductoDAO {
             ps.executeUpdate();
 
         } catch (Exception e) {
-            System.out.println("Error insertar: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
-    //  LISTAR (para JTable)
-    public List<Producto> listar() {
+    // LISTAR
+    public ArrayList<Producto> listarProducto() {
 
-        List<Producto> lista = new ArrayList<>();
+        ArrayList<Producto> lista = new ArrayList<>();
 
         String sql = "SELECT * FROM productos";
 
-        try {
-            PreparedStatement ps = conexion.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();
+        try (PreparedStatement ps = conexion.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
 
                 Producto p = new Producto();
 
-                p.setId(rs.getInt("id"));
+                p.setId_producto(rs.getInt("id_producto"));
                 p.setNombre(rs.getString("nombre"));
                 p.setPrecio(rs.getDouble("precio"));
                 p.setStock(rs.getInt("stock"));
@@ -60,76 +51,71 @@ public class ProductoDAO {
             }
 
         } catch (Exception e) {
-            System.out.println("Error listar: " + e.getMessage());
+            e.printStackTrace();
         }
 
         return lista;
     }
 
-    //  BUSCAR POR ID
+    // BUSCAR
     public Producto buscarPorId(int id) {
 
         Producto p = null;
 
-        String sql = "SELECT * FROM productos WHERE id = ?";
+        String sql = "SELECT * FROM productos WHERE id_producto = ?";
 
-        try {
-            PreparedStatement ps = conexion.prepareStatement(sql);
+        try (PreparedStatement ps = conexion.prepareStatement(sql)) {
+
             ps.setInt(1, id);
 
-            
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
-
                 p = new Producto();
-
-                p.setId(rs.getInt("id"));
+                p.setId_producto(rs.getInt("id_producto"));
                 p.setNombre(rs.getString("nombre"));
                 p.setPrecio(rs.getDouble("precio"));
                 p.setStock(rs.getInt("stock"));
             }
 
         } catch (Exception e) {
-            System.out.println("Error buscar: " + e.getMessage());
+            e.printStackTrace();
         }
 
         return p;
     }
 
-    //  ELIMINAR
+    // ELIMINAR
     public void eliminar(int id) {
 
-        String sql = "DELETE FROM productos WHERE id = ?";
+        String sql = "DELETE FROM productos WHERE id_producto = ?";
 
-        try {
-            PreparedStatement ps = conexion.prepareStatement(sql);
+        try (PreparedStatement ps = conexion.prepareStatement(sql)) {
+
             ps.setInt(1, id);
-
             ps.executeUpdate();
 
         } catch (Exception e) {
-            System.out.println("Error eliminar: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
-    //  MODIFICAR
+    // MODIFICAR
     public void modificar(Producto p) {
 
-        String sql = "UPDATE productos SET nombre=?, precio=?, stock=? WHERE id=?";
+        String sql = "UPDATE productos SET nombre=?, precio=?, stock=? WHERE id_producto=?";
 
-        try {
-            PreparedStatement ps = conexion.prepareStatement(sql);
+        try (PreparedStatement ps = conexion.prepareStatement(sql)) {
 
             ps.setString(1, p.getNombre());
             ps.setDouble(2, p.getPrecio());
             ps.setInt(3, p.getStock());
-            ps.setInt(4, p.getId());
+            ps.setInt(4, p.getId_producto());
 
             ps.executeUpdate();
 
         } catch (Exception e) {
-            System.out.println("Error modificar: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 }

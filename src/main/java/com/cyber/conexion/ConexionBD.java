@@ -4,15 +4,16 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+
 public class ConexionBD {
 
     private static final String URL = "jdbc:mysql://localhost:3306/sistemagestioncyber";
     private static final String USER = "root";  // Usuario con el que ingresamos a MySQL
-    private static final String PASSWORD = "guadaybebu";  // Contraseña de MySQL Workbench
+    private static final String PASSWORD = "";  // Contraseña de MySQL Workbench
 
 
     // Intenta conectarse a la base de datos y devuelve esa conexión.
-    public static Connection getconectar() {
+    public static Connection conectar() {
         Connection conexion = null; 
         
         try {                                                    
@@ -38,4 +39,3 @@ public class ConexionBD {
         }
     }
 }
-

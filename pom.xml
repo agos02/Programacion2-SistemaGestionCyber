@@ -12,7 +12,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.release>21</maven.compiler.release>
+        <maven.compiler.release>25</maven.compiler.release>
         <exec.mainClass>com.cyber.SistemaGestionCyber</exec.mainClass>
     </properties>
 
@@ -22,6 +22,7 @@
             <artifactId>mysql-connector-j</artifactId>
             <version>8.0.33</version>
         </dependency>
+        
         
         <dependency>
             <groupId>org.swinglabs.swingx</groupId>
