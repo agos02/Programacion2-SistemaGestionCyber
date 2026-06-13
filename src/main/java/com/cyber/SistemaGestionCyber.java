@@ -1,10 +1,11 @@
 package com.cyber;
+
 import com.cyber.controladores.ClienteControlador;
 import com.cyber.vistas.ClienteVista;
-
 import com.cyber.conexion.ConexionBD;
 import com.cyber.vistas.SesionVista;
 import java.sql.Connection;
+import views.productosviews;
 
 public class SistemaGestionCyber {
 
@@ -16,7 +17,10 @@ public class SistemaGestionCyber {
         if (conexion != null) 
         {
             System.out.println("La conexión funciona correctamente.");
+           
+            productosviews.mainProductos();
             
+            ConexionBD.cerrar(conexion); //Una vez probado cerramos la conexión inmediatament
             SesionVista.mainSesion();
             
             ConexionBD.cerrar(conexion); //Una vez probado, cerramos la conexión inmediatamente     
@@ -24,7 +28,6 @@ public class SistemaGestionCyber {
         else {
             System.out.println("No se pudo conectar a la base de datos.");
         }
-<<<<<<< HEAD
         
         
           java.awt.EventQueue.invokeLater(() -> {
@@ -32,24 +35,6 @@ public class SistemaGestionCyber {
         });
         
         
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-
-=======
->>>>>>> feature/sesiones
     }
 }
+  
