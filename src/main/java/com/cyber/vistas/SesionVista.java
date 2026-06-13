@@ -47,18 +47,18 @@ public class SesionVista
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1" }));
-        jPanel1.add(jComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 50, -1, -1));
+        jPanel1.add(jComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 30, -1, -1));
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel1.setText("Clientes");
         jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 30, -1, -1));
 
         jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        jPanel1.add(jComboBox2, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 50, -1, -1));
+        jPanel1.add(jComboBox2, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 70, -1, -1));
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel2.setText("PCs Libres");
-        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 30, -1, -1));
+        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 70, -1, -1));
 
         jButton1.setText("Iniciar Sesion");
         jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -66,7 +66,7 @@ public class SesionVista
                 jButton1MouseClicked(evt);
             }
         });
-        jPanel1.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 130, -1, -1));
+        jPanel1.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 150, -1, -1));
 
         jButton2.setText("Finalizar Sesion");
         jButton2.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -74,7 +74,7 @@ public class SesionVista
                 jButton2MouseClicked(evt);
             }
         });
-        jPanel1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 130, -1, -1));
+        jPanel1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 150, -1, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -112,7 +112,7 @@ public class SesionVista
     }//GEN-LAST:event_jButton1MouseClicked
 
     private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseClicked
-        /*if (jComboBox2.getSelectedItem() == null)
+        if (jComboBox2.getSelectedItem() == null)
         {
             System.out.println("Seleccione una computadora");
             return;
@@ -120,8 +120,7 @@ public class SesionVista
 
         String pcSeleccionada = jComboBox2.getSelectedItem().toString();
 
-        int numeroPc =
-                Integer.parseInt(pcSeleccionada);
+        int numeroPc = Integer.parseInt(pcSeleccionada);
 
         int idSesion = controlador.obtenerSesionActivaPorPc(numeroPc);
 
@@ -131,9 +130,7 @@ public class SesionVista
             return;
         }
 
-        controlador.finalizarSesion(idSesion);
-        }*/
-        
+        controlador.finalizarSesion(idSesion);  
     }//GEN-LAST:event_jButton2MouseClicked
 
     private void cargarClientes()

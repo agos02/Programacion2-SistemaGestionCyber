@@ -77,7 +77,8 @@ public class SesionDAO {
         }
     }
 
-    public void finalizarSesion(int idSesion){
+    public void finalizarSesion(int idSesion)
+    {
         String sql = "UPDATE sesiones " + "SET fecha_fin = NOW(), " + "estado_sesion = 'Finalizada' " + "WHERE id_sesiones = ?";
         
         try
@@ -92,14 +93,13 @@ public class SesionDAO {
             {
                 System.out.println("Sesión finalizada correctamente");
             }
-
             ps.close();
         }
         catch(SQLException e)
         {
             e.printStackTrace();
         }
-            System.out.println("Sesión finalizada");
+        System.out.println("Sesión finalizada");
     }
 
     public Sesion buscarPorId(int idSesion)
@@ -264,5 +264,35 @@ public class SesionDAO {
         {
             e.printStackTrace();
         }
+    }
+    
+    public int obtenerSesionActivaPorPc(int numeroPc)
+    {
+        int idSesion = 0;
+
+        String sql = "SELECT s.id_sesiones FROM sesiones s INNER JOIN computadoras c ON s.id_computadora = c.id_computadora WHERE c.numero_pc = ? AND s.estado_sesion = 'Activa'";
+
+        try
+        {
+            PreparedStatement ps = ConexionBD.conectar().prepareStatement(sql);
+
+            ps.setInt(1, numeroPc);
+
+            ResultSet rs = ps.executeQuery();
+
+            if(rs.next())
+            {
+                idSesion = rs.getInt("id_sesiones");
+            }
+
+            rs.close();
+            ps.close();
+        }
+        catch(SQLException e)
+        {
+            e.printStackTrace();
+        }
+
+        return idSesion;
     }
 }

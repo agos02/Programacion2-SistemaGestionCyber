@@ -55,7 +55,9 @@ public class SesionControlador{
         }
 
         LocalDateTime ahora = LocalDateTime.now();
-
+        
+        sesion.setFechaFin(ahora);
+                
         Duration duracion = Duration.between(sesion.getFechaInicio(),ahora);
 
         long minutos = duracion.toMinutes();
@@ -75,13 +77,16 @@ public class SesionControlador{
         System.out.println("Monto productos: $" + montoProductos);
 
         System.out.println("TOTAL A COBRAR: $" + total);
-
-        this.sesionDAO.finalizarSesion(idSesion);
         
         // Abrir ventana de cobro
         /*CobroVista cobroVista = new CobroVista(idSesion, montoSesion, montoProductos);
 
         cobroVista.setLocationRelativeTo(null);
         cobroVista.setVisible(true);*/
+    }
+    
+    public int obtenerSesionActivaPorPc(int numeroPc)
+    {
+        return this.sesionDAO.obtenerSesionActivaPorPc(numeroPc);
     }
 }

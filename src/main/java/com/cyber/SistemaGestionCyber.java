@@ -1,6 +1,7 @@
 package com.cyber;
 
 import com.cyber.conexion.ConexionBD;
+import com.cyber.vistas.SesionVista;
 import java.sql.Connection;
 
 public class SistemaGestionCyber {
@@ -8,12 +9,15 @@ public class SistemaGestionCyber {
     public static void main(String[] args) throws Exception{
         
         Connection conexion = ConexionBD.conectar();  //Intentamos conectarnos a la base de datos
-
-        if (conexion != null) {     //Verificamos si la conexión funcionó
+       
+        //Verificamos si la conexión funcionó
+        if (conexion != null) 
+        {
             System.out.println("La conexión funciona correctamente.");
             
-            ConexionBD.cerrar(conexion); //Una vez probado, cerramos la conexión inmediatamente
+            SesionVista.mainSesion();
             
+            ConexionBD.cerrar(conexion); //Una vez probado, cerramos la conexión inmediatamente     
         } 
         else {
             System.out.println("No se pudo conectar a la base de datos.");
