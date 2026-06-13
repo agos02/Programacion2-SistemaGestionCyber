@@ -8,10 +8,22 @@ import java.sql.ResultSet;
 public class ReportesDAO {
 
     //clientes
-    public void listarClientes() {
+    public ResultSet listarClientes() {
+
+    try {
+        Connection con = ConexionBD.conectar();
 
         String sql = "SELECT * FROM clientes";
 
+        PreparedStatement ps = con.prepareStatement(sql);
+
+        return ps.executeQuery();
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+    return null;
     }
     
     public int cantidadClientes() {
@@ -42,69 +54,183 @@ public class ReportesDAO {
         return cantidad;
     }
 
+    public ResultSet top3Clientes () {
+        
+    try {
+        Connection con = ConexionBD.conectar();
+
+        String sql =
+        "SELECT c.id_cliente, c.nombre, " +
+        "COUNT(s.id_sesiones) AS cantidad_sesiones " +
+        "FROM clientes c " +
+        "INNER JOIN sesiones s ON c.id_cliente = s.id_cliente " +
+        "GROUP BY c.id_cliente, c.nombre " +
+        "ORDER BY cantidad_sesiones DESC " +
+        "LIMIT 3";
+
+
+        PreparedStatement ps = con.prepareStatement(sql);
+
+        return ps.executeQuery();
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+    return null;
+}
+    
     //sesiones
-    public void listarSesiones() {
+    public ResultSet listarSesiones() {
+        try {
+        Connection con = ConexionBD.conectar();
 
         String sql = 
             "SELECT * FROM sesiones";
 
+        PreparedStatement ps = con.prepareStatement(sql);
+
+        return ps.executeQuery();
+
+    } catch (Exception e) {
+        e.printStackTrace();
     }
+
+    return null;
+}
+        
     
-    public void cantidadSesiones(){
-        String sql = 
+    public int cantidadSesiones(){
+        
+        int cantidad = 0;
+
+        try {
+            Connection con = ConexionBD.conectar();
+
+            String sql = 
            "SELECT COUNT(*) AS cantidad_sesiones " +
            "FROM sesiones;";
-    }
 
-    public void clienteMasSesiones() {
+            PreparedStatement ps = con.prepareStatement(sql);
 
-        String sql =
-            "SELECT c.id, c.nombre, " +
-            "COUNT(s.id) AS cantidad_sesiones " +
-            "FROM clientes c " +
-            "INNER JOIN sesiones s ON c.id = s.id_cliente " +
-            "GROUP BY c.id, c.nombre " +
-            "ORDER BY cantidad_sesiones DESC " +
-            "LIMIT 3";
+            ResultSet rs = ps.executeQuery();
 
+            if (rs.next()) {
+                cantidad = rs.getInt("cantidad_sesiones");
+            }
+
+            ConexionBD.cerrar(con);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return cantidad;
     }
 
     //computadoras
-    public void obtenerComputadoras() {
+    public ResultSet obtenerComputadoras() {
+        
+    try {
+        Connection con = ConexionBD.conectar();
 
         String sql = "SELECT * FROM computadoras";
 
+        PreparedStatement ps = con.prepareStatement(sql);
+
+        return ps.executeQuery();
+
+    } catch (Exception e) {
+        e.printStackTrace();
     }
 
-    public void estadoComputadoras() {
+    return null;
+}
+        
+
+    public ResultSet estadoComputadoras() {
+ 
+        try {
+        Connection con = ConexionBD.conectar();
 
         String sql =
             "SELECT numero_pc, estado " +
             "FROM computadoras";
 
+        PreparedStatement ps = con.prepareStatement(sql);
+
+        return ps.executeQuery();
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+    return null;
+        
+
     }
     
-    public void computadorasDisponibles() {
+    public ResultSet computadorasDisponibles() {
+
+    try {
+
+        Connection con = ConexionBD.conectar();
 
         String sql =
             "SELECT * " +
             "FROM computadoras " +
-            "WHERE estado = 'Disponible'";
-    }
-    
-    public void cantidadPorEstado() {
+            "WHERE estado = 'Libre'";
 
-        String sql =
+        PreparedStatement ps = con.prepareStatement(sql);
+
+        return ps.executeQuery();
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+    return null;
+}
+    
+    public ResultSet cantidadPorEstado() {
+         try {
+        Connection con = ConexionBD.conectar();
+
+         String sql =
             "SELECT estado, COUNT(*) AS cantidad " +
             "FROM computadoras " +
             "GROUP BY estado";
+
+        PreparedStatement ps = con.prepareStatement(sql);
+
+        return ps.executeQuery();
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+    return null;
+       
     }
     
     //cobros
-    public void obtenerCobros(){
-        
+    public ResultSet obtenerCobros(){
+         try {
+        Connection con = ConexionBD.conectar();
+
         String sql =
             "SELECT * FROM cobros ";
+        
+        PreparedStatement ps = con.prepareStatement(sql);
+
+        return ps.executeQuery();
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+    return null;
+        
     }
     
     
@@ -138,32 +264,73 @@ public class ReportesDAO {
     
     
     
-    public void ingresosFormaPago() {
-        
+    public ResultSet ingresosFormaPago() {
+         try {
+        Connection con = ConexionBD.conectar();
+
         String sql =
             "SELECT forma_pago, " +
             "SUM(monto_total) AS ingresos_totales " +
             "FROM cobros " +
             "GROUP BY forma_pago " +
             "ORDER BY ingresos_totales DESC";
+
+        PreparedStatement ps = con.prepareStatement(sql);
+
+        return ps.executeQuery();
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+    return null;
+        
     }
     
     //productos
-    public void obtenerProductos() {
-        
+    public ResultSet obtenerProductos() {
+         try {
+        Connection con = ConexionBD.conectar();
+
         String sql =
              "SELECT * From productos";
+
+        PreparedStatement ps = con.prepareStatement(sql);
+
+        return ps.executeQuery();
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+    return null;
+    
     }
     
-    public void productoPrecio() {
-        
+    public ResultSet productoPrecio() {
+         try {
+        Connection con = ConexionBD.conectar();
+
         String sql = 
               "SELECT nombre, precio " +
               "FROM productos " +
               "ORDER BY precio ASC"; 
+
+        PreparedStatement ps = con.prepareStatement(sql);
+
+        return ps.executeQuery();
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+    return null;
+               
     }
     
-    public void masVendido() {
+    public ResultSet masVendido() {
+         try {
+        Connection con = ConexionBD.conectar();
 
         String sql =
             "SELECT p.nombre, SUM(d.cantidad) AS total_vendido " +
@@ -172,33 +339,83 @@ public class ReportesDAO {
             "GROUP BY p.id_producto, p.nombre " +
             "ORDER BY total_vendido DESC " +
             "LIMIT 1";
+
+        PreparedStatement ps = con.prepareStatement(sql);
+
+        return ps.executeQuery();
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+    return null;
+        
     }
     
-    public void pocoStock() {
-        
-         String sql =
+    public ResultSet pocoStock() {
+         try {
+        Connection con = ConexionBD.conectar();
+
+        String sql =
              "SELECT nombre, stock " +
              "FROM productos " +
              "WHERE stock < 5 " +
              "ORDER BY stock ASC ";
+
+        PreparedStatement ps = con.prepareStatement(sql);
+
+        return ps.executeQuery();
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+    return null;
+         
     }
     
-    public void productoMasCaro() {
+    public ResultSet productoMasCaro() {
+         try {
+        Connection con = ConexionBD.conectar();
 
         String sql =
             "SELECT nombre, precio " +
             "FROM productos " +
             "ORDER BY precio DESC " +
             "LIMIT 1";
+
+        PreparedStatement ps = con.prepareStatement(sql);
+
+        return ps.executeQuery();
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+    return null;
+        
     }
     
-    public void productoMasBarato() {
+    public ResultSet productoMasBarato() {
+         try {
+        Connection con = ConexionBD.conectar();
 
         String sql =
             "SELECT nombre, precio " +
             "FROM productos " +
             "ORDER BY precio ASC " +
             "LIMIT 1";
+
+        PreparedStatement ps = con.prepareStatement(sql);
+
+        return ps.executeQuery();
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+    return null;
+        
     }
     
     public double valorTotalStock() {
@@ -227,8 +444,7 @@ public class ReportesDAO {
     }
 
     return total;
-}
-    
-    
+    }
     
 }
+

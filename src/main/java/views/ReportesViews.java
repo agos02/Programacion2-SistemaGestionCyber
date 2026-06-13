@@ -2,6 +2,9 @@ package views;
 
 import com.cyber.controladores.ReportesControlador;
 import javax.swing.JOptionPane;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import javax.swing.table.DefaultTableModel;
 
 public class ReportesViews extends javax.swing.JFrame {
     
@@ -22,7 +25,42 @@ public class ReportesViews extends javax.swing.JFrame {
         initComponents();
     }
     
-    
+  
+
+private void cargarTabla(ResultSet rs) {
+
+    try {
+
+        DefaultTableModel modelo = new DefaultTableModel();
+
+        ResultSetMetaData meta = rs.getMetaData();
+
+        int columnas = meta.getColumnCount();
+
+        // Agregar nombres de columnas
+        for (int i = 1; i <= columnas; i++) {
+            modelo.addColumn(meta.getColumnName(i));
+        }
+
+        // Agregar filas
+        while (rs.next()) {
+
+            Object[] fila = new Object[columnas];
+
+            for (int i = 0; i < columnas; i++) {
+                fila[i] = rs.getObject(i + 1);
+            }
+
+            modelo.addRow(fila);
+        }
+
+        tblReportes.setModel(modelo);
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
+            
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -58,19 +96,25 @@ public class ReportesViews extends javax.swing.JFrame {
         ComboClientes.addActionListener(this::ComboClientesActionPerformed);
 
         ComboComputadoras.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Seleccione...", "Listar computadoras", "Ver estados", "Computadoras disponibles", "Cantidad por estado", " " }));
+        ComboComputadoras.addActionListener(this::ComboComputadorasActionPerformed);
 
         ComboSesiones.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Seleccione...", "Listar sesiones", "Cantidad de sesiones" }));
+        ComboSesiones.addActionListener(this::ComboSesionesActionPerformed);
 
         ComboProductos.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Seleccione...", "Listar productos", "Por precio ASC", "Mas vendido", "Poco stock", "Mas caro", "Mas barato" }));
+        ComboProductos.addActionListener(this::ComboProductosActionPerformed);
 
         btnClientes.setText("Mostrar");
         btnClientes.addActionListener(this::btnClientesActionPerformed);
 
         btnComputadoras.setText("Mostrar");
+        btnComputadoras.addActionListener(this::btnComputadorasActionPerformed);
 
         btnSesiones.setText("Mostrar");
+        btnSesiones.addActionListener(this::btnSesionesActionPerformed);
 
         btnProducto.setText("Mostrar");
+        btnProducto.addActionListener(this::btnProductoActionPerformed);
 
         jLabel2.setText("Clientes");
 
@@ -80,9 +124,11 @@ public class ReportesViews extends javax.swing.JFrame {
 
         jLabel5.setText("Productos");
 
-        ComboCobros.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Seleccione...", "Obtener cobros", "Ingresos totalles", "Ingresos por forma de pago" }));
+        ComboCobros.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Seleccione...", "Obtener cobros", "Ingresos totales", "Ingresos por forma de pago" }));
+        ComboCobros.addActionListener(this::ComboCobrosActionPerformed);
 
         btnCobros.setText("Mostrar");
+        btnCobros.addActionListener(this::btnCobrosActionPerformed);
 
         jLabel6.setText("Cobros");
 
@@ -195,48 +241,165 @@ public class ReportesViews extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+        //CLIENTES
     private void ComboClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ComboClientesActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_ComboClientesActionPerformed
 
     private void btnClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClientesActionPerformed
-       
+
     String opcion = ComboClientes.getSelectedItem().toString();
 
     switch(opcion) {
 
         case "Cantidad de clientes":
-
-            int cantidad = controlador.cantidadClientes();
-
             JOptionPane.showMessageDialog(
                 this,
-                "Cantidad de clientes: " + cantidad
+                "Cantidad de clientes: " +
+                controlador.cantidadClientes()
             );
-
             break;
 
         case "Listar clientes":
-
-            JOptionPane.showMessageDialog(
-                this,
-                "Todavía no implementado"
-            );
-
+            cargarTabla(controlador.listarClientes());
             break;
 
         case "Top 3 clientes":
-
-            JOptionPane.showMessageDialog(
-                this,
-                "Todavía no implementado"
-            );
-
+            cargarTabla(controlador.top3Clientes());
             break;
     }
+
     }//GEN-LAST:event_btnClientesActionPerformed
 
+    
+        //SESIONES
+    private void btnSesionesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSesionesActionPerformed
+       
+        String opcion = ComboSesiones.getSelectedItem().toString();
+
+    switch(opcion) {
+
+        case "Cantidad de sesiones":
+            JOptionPane.showMessageDialog(
+                this,
+                "Cantidad de sesiones: " +
+                controlador.cantidadSesiones()
+            );
+            break;
+
+        case "Listar sesiones":
+            cargarTabla(controlador.listarSesiones());
+            break;
+    }
+    
+    }//GEN-LAST:event_btnSesionesActionPerformed
+
+    private void ComboSesionesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ComboSesionesActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ComboSesionesActionPerformed
+
+    
+        //COMPUTADORAS
+    private void ComboComputadorasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ComboComputadorasActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ComboComputadorasActionPerformed
+
+    private void btnComputadorasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnComputadorasActionPerformed
+
+    String opcion = ComboComputadoras.getSelectedItem().toString();
+
+    switch(opcion) {
+
+        case "Listar computadoras":
+            cargarTabla(controlador.obtenerComputadoras());
+            break;
+
+        case "Ver estados":
+            cargarTabla(controlador.estadoComputadoras());
+            break;
+
+        case "Computadoras disponibles":
+            cargarTabla(controlador.computadorasDisponibles());
+            break;
+
+        case "Cantidad por estado":
+            cargarTabla(controlador.cantidadPorEstado());
+            break;
+    }
+
+    }//GEN-LAST:event_btnComputadorasActionPerformed
+    
+    
+        //PRODUCTOS
+    private void ComboProductosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ComboProductosActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ComboProductosActionPerformed
+
+    private void btnProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProductoActionPerformed
+        
+        String opcion = ComboProductos.getSelectedItem().toString();
+
+    switch(opcion) {
+
+        case "Listar productos":
+            cargarTabla(controlador.obtenerProducto());
+            break;
+
+        case "Por precio ASC":
+            cargarTabla(controlador.productoPrecio());
+            break;
+
+        case "Mas vendido":
+            cargarTabla(controlador.MasVendido());
+            break;
+
+        case "Poco stock":
+            cargarTabla(controlador.pocoStock());
+            break;
+
+        case "Mas caro":
+            cargarTabla(controlador.productoMasCaro());
+            break;
+
+        case "Mas barato":
+            cargarTabla(controlador.productoMasBarato());
+            break;
+    }
+    }//GEN-LAST:event_btnProductoActionPerformed
+        
+        //COBROS
+    private void ComboCobrosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ComboCobrosActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ComboCobrosActionPerformed
+
+    private void btnCobrosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCobrosActionPerformed
+        
+        String opcion = ComboCobros.getSelectedItem().toString();
+
+    switch(opcion) {
+
+        case "Obtener cobros":
+            cargarTabla(controlador.obtenerCobros());
+            break;
+
+        case "Ingresos totalles":
+            JOptionPane.showMessageDialog(
+                this,
+                "Ingresos totales: $" +
+                controlador.ingresosTotales()
+            );
+            break;
+
+        case "Ingresos por forma de pago":
+            cargarTabla(controlador.ingresosFormaPago());
+            break;
+    }
+    }//GEN-LAST:event_btnCobrosActionPerformed
+    
+    
+    
+    
+    
     
     
     

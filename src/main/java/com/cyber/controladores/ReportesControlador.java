@@ -1,6 +1,7 @@
 package com.cyber.controladores;
 
 import com.cyber.dao.ReportesDAO;
+import java.sql.ResultSet;
 
 public class ReportesControlador {
 
@@ -8,84 +9,85 @@ public class ReportesControlador {
 
     
     //clientes
-    public void listarClientes() {
-        dao.listarClientes();
+    public ResultSet listarClientes() {
+        return dao.listarClientes();
     }
     
      public int cantidadClientes() {
          return dao.cantidadClientes();
      }
+     
+     public ResultSet top3Clientes(){
+         return dao.top3Clientes();
+     }
+        
     
     //sesiones
-    public void listarSesiones() {
-        dao.listarSesiones();
+    public ResultSet listarSesiones() {
+        return dao.listarSesiones();
     }
     
-    public void cantidadSesiones() {
-        dao.cantidadSesiones();
+    public int cantidadSesiones() {
+        return dao.cantidadSesiones();
     }
     
-    public void clienteMasSesiones() {
-        dao.clienteMasSesiones();
-    }
-
     //computadoras
-    public void obtenerComputadoras() {
-        dao.obtenerComputadoras();
+    public ResultSet obtenerComputadoras() {
+        return dao.obtenerComputadoras();
     }
 
-    public void estadoComputadoras() {
-        dao.estadoComputadoras();
+    public ResultSet estadoComputadoras() {
+        return dao.estadoComputadoras();
     }
     
-    public void computadorasDisponibles() {
-        dao.computadorasDisponibles();
+    public ResultSet computadorasDisponibles() {
+        return dao.computadorasDisponibles();
     }
     
-    public void cantidadPorEstado() {
-        dao.cantidadPorEstado();
+    public ResultSet cantidadPorEstado() {
+        return dao.cantidadPorEstado();
     }
     
     //Cobros
-    public void obtenerCobros() {
-        dao.obtenerCobros();
+    public ResultSet obtenerCobros() {
+        return dao.obtenerCobros();
     }
     
     public double ingresosTotales() {
-        dao.ingresosTotales();
+        return dao.ingresosTotales();
     }
     
-    public void ingresosFormaPago() {
-        dao.ingresosFormaPago();
+    public ResultSet ingresosFormaPago() {
+        return dao.ingresosFormaPago();
     }
     
     //Productos
-    public void obtenerProducto() {
-        dao.obtenerProductos();
+    public ResultSet obtenerProducto() {
+        return dao.obtenerProductos();
     }
     
-    public void productoPrecio() {
-        dao.productoPrecio();
+    public ResultSet productoPrecio() {
+        return dao.productoPrecio();
     }
      
-    public void MasVendido() {
-        dao.masVendido();
+    public ResultSet MasVendido() {
+        return dao.masVendido();
     }
      
-    public void pocoStock () {
-        dao.pocoStock();
+    public ResultSet pocoStock () {
+        return dao.pocoStock();
     }
     
-    public void productoMasCaro() {
-        dao.productoMasCaro();
+    public ResultSet productoMasCaro() {
+        return dao.productoMasCaro();
     }
     
-    public void productoMasBarato() {
-        dao.productoMasBarato();
+    public ResultSet productoMasBarato() {
+        return dao.productoMasBarato();
     }
     
     public double valorTotalStock() {
-        dao.valorTotalStock();
+        return dao.valorTotalStock();
     }
     
     
