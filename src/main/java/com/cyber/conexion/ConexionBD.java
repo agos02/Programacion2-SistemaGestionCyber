@@ -13,7 +13,8 @@ public class ConexionBD {
 
 
     // Intenta conectarse a la base de datos y devuelve esa conexión.
-    public static Connection conectar() {
+    public static Connection conectar()
+    {
         Connection conexion = null; 
         
         try {                                                    
@@ -27,8 +28,10 @@ public class ConexionBD {
     }
 
     //Método para cerrar la conexión de forma segura desde cualquier DAO
-    public static void cerrar(Connection conexion) {
-        if (conexion != null) {
+    public static void cerrar(Connection conexion)
+    {
+        if (conexion != null)
+        {
             try {
                 conexion.close();
                 System.out.println("Conexión cerrada correctamente.");

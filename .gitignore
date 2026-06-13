@@ -1,1 +1,23 @@
 /target/
+# --- Archivos de Compilación ---
+target/
+*.class
+*.jar
+*.war
+
+# --- Configuraciones del IDE (NetBeans, IntelliJ, Eclipse, VS Code) ---
+nbproject/
+nb-configuration.xml
+.nb-gradle/
+.idea/
+*.iml
+.settings/
+.classpath
+.project
+.vscode/
+
+# --- Archivos del Sistema Operativo ---
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.DS_Store

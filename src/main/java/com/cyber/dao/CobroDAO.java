@@ -1,13 +1,144 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.cyber.dao;
 
-/**
- *
- * @author rosch
- */
+import com.cyber.conexion.ConexionBD;
+import com.cyber.modelos.Cobro;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
 public class CobroDAO {
-    
+
+    //REGISTRAR EL COBRO COMPLETO (Ticket + Productos vendidos)
+    public boolean guardar(Cobro c, List<Object[]> productos) {
+        String sqlTicket = "INSERT INTO cobros (id_sesion, monto_sesion, monto_productos, monto_total, forma_pago, fecha_pago) VALUES (?, ?, ?, ?, ?, ?)";
+        String sqlDetalle = "INSERT INTO detalle_cobros (id_ticket, id_producto, cantidad) VALUES (?, ?, ?)";
+        
+        Connection con = null;
+        try {
+            con = ConexionBD.conectar();
+            con.setAutoCommit(false); //Pausa el guardado automático (Inicia Transacción)
+
+            int idTicket = -1;
+            
+            //Guardamos el ticket principal y pedimos el ID generado
+            try (PreparedStatement ps1 = con.prepareStatement(sqlTicket, Statement.RETURN_GENERATED_KEYS)) {
+                ps1.setInt(1, c.getIdSesion());
+                ps1.setDouble(2, c.getMontoSesion());
+                ps1.setDouble(3, c.getMontoProductos());
+                ps1.setDouble(4, c.getMontoTotal());
+                ps1.setString(5, c.getFormaPago());
+                ps1.setTimestamp(6, c.getFechaPago());
+                
+                ps1.executeUpdate();
+                
+                //Leemos el ID que creó MySQL
+                try (ResultSet rs = ps1.getGeneratedKeys()) {
+                    if (rs.next()) {
+                        idTicket = rs.getInt(1); 
+                    }
+                }
+            }
+
+            //Si obtuvimos el ID, guardamos la lista de productos comprados
+            if (idTicket != -1 && productos != null) {
+                try (PreparedStatement ps2 = con.prepareStatement(sqlDetalle)) {
+                    for (Object[] p : productos) {
+                        // p[0] = id_producto, p[1] = cantidad
+                        ps2.setInt(1, idTicket);
+                        ps2.setInt(2, (int) p[0]);
+                        ps2.setInt(3, (int) p[1]);
+                        ps2.addBatch(); //Acumula el producto en la lista
+                    }
+                    ps2.executeBatch(); //Guarda todos los productos juntos en un viaje
+                }
+            }
+
+            con.commit(); //Todo salió bien, se guarda TODO definitivamente
+            return true;
+
+        } catch (SQLException e) {
+            if (con != null) {
+                try { con.rollback(); } catch (SQLException err) { err.printStackTrace(); } //Cancela todo si algo falló
+            }
+            System.out.println("Error al guardar el cobro.");
+            e.printStackTrace();
+            return false;
+        } finally {
+            if (con != null) {
+                try { con.close(); } catch (SQLException e) { e.printStackTrace(); } //Cierra la conexión siempre
+            }
+        }
+    }
+
+    //OBTENER EL HISTORIAL (Para cargar la tabla)
+    public List<Cobro> listar() {
+        List<Cobro> lista = new ArrayList<>();
+        String sql = "SELECT id_ticket, id_sesion, monto_sesion, monto_productos, monto_total, forma_pago, fecha_pago FROM cobros ORDER BY id_ticket DESC";
+        
+        try (Connection con = ConexionBD.conectar();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            
+            while (rs.next()) {
+                Cobro c = new Cobro();
+                c.setIdTicket(rs.getInt("id_ticket"));
+                c.setIdSesion(rs.getInt("id_sesion"));
+                c.setMontoSesion(rs.getDouble("monto_sesion"));
+                c.setMontoProductos(rs.getDouble("monto_productos"));
+                c.setMontoTotal(rs.getDouble("monto_total"));
+                c.setFormaPago(rs.getString("forma_pago"));
+                c.setFechaPago(rs.getTimestamp("fecha_pago"));
+                
+                lista.add(c); //Agrega el cobro a la lista
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al listar cobros.");
+            e.printStackTrace();
+        }
+        return lista;
+    }
+
+    //ELIMINAR UN COBRO POR ID
+    public boolean eliminar(int id) {
+        String sqlDetalle = "DELETE FROM detalle_cobros WHERE id_cobro = ?";
+        String sqlTicket = "DELETE FROM cobros WHERE id_ticket = ?";
+        
+        Connection con = null;
+        try {
+            con = ConexionBD.conectar();
+            con.setAutoCommit(false); //Inicia Transacción
+
+            //Primero borramos los detalles (hijos)
+            try (PreparedStatement ps1 = con.prepareStatement(sqlDetalle)) {
+                ps1.setInt(1, id);
+                ps1.executeUpdate();
+            }
+
+            //Después borramos el ticket principal (padre)
+            int filas = 0;
+            try (PreparedStatement ps2 = con.prepareStatement(sqlTicket)) {
+                ps2.setInt(1, id);
+                filas = ps2.executeUpdate();
+            }
+
+            con.commit(); //Confirma la eliminación total
+            return filas > 0;
+
+        } catch (SQLException e) {
+            if (con != null) {
+                try { con.rollback(); } catch (SQLException err) { err.printStackTrace(); } //Cancela si falla
+            }
+            System.out.println("Error al eliminar.");
+            e.printStackTrace();
+            return false;
+        } finally {
+            if (con != null) {
+                try { con.close(); } catch (SQLException e) { e.printStackTrace(); }
+            }
+        }
+    }
 }
