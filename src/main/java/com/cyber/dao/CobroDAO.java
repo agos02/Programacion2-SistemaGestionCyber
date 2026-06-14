@@ -104,7 +104,7 @@ public class CobroDAO {
 
     //ELIMINAR UN COBRO POR ID
     public boolean eliminar(int id) {
-        String sqlDetalle = "DELETE FROM detalle_cobros WHERE id_ticket = ?";
+        String sqlDetalle = "DELETE FROM detalle_cobros WHERE id_cobro = ?";
         String sqlTicket = "DELETE FROM cobros WHERE id_ticket = ?";
         
         Connection con = null;
