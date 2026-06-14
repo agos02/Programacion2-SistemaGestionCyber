@@ -48,9 +48,9 @@ public class CobroDAO {
                 try (PreparedStatement ps2 = con.prepareStatement(sqlDetalle)) {
                     for (Object[] p : productos) {
                         // p[0] = id_producto, p[1] = cantidad
-                        ps2.setInt(1, idTicket);
-                        ps2.setInt(2, (int) p[0]);
-                        ps2.setInt(3, (int) p[1]);
+                        ps2.setInt(1, idcobro); //el ID generado en cobros
+                        ps2.setInt(2, (int) p[0]); //id_producto
+                        ps2.setInt(3, (int) p[1]); //cantidad
                         ps2.addBatch(); //Acumula el producto en la lista
                     }
                     ps2.executeBatch(); //Guarda todos los productos juntos en un viaje
@@ -104,7 +104,7 @@ public class CobroDAO {
 
     //ELIMINAR UN COBRO POR ID
     public boolean eliminar(int id) {
-        String sqlDetalle = "DELETE FROM detalle_cobros WHERE id_cobro = ?";
+        String sqlDetalle = "DELETE FROM detalle_cobros WHERE id_ticket = ?";
         String sqlTicket = "DELETE FROM cobros WHERE id_ticket = ?";
         
         Connection con = null;
