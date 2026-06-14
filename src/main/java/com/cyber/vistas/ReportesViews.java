@@ -1,4 +1,4 @@
-package views;
+package com.cyber.vistas;
 
 import com.cyber.controladores.ReportesControlador;
 import javax.swing.JOptionPane;

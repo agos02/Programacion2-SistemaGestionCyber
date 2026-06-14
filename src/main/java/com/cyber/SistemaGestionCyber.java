@@ -5,7 +5,7 @@ import com.cyber.vistas.ClienteVista;
 import com.cyber.conexion.ConexionBD;
 import com.cyber.vistas.SesionVista;
 import java.sql.Connection;
-import views.productosviews;
+import com.cyber.vistas.productosviews;
 
 public class SistemaGestionCyber {
 
