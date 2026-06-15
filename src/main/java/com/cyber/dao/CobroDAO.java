@@ -48,7 +48,7 @@ public class CobroDAO {
                 try (PreparedStatement ps2 = con.prepareStatement(sqlDetalle)) {
                     for (Object[] p : productos) {
                         // p[0] = id_producto, p[1] = cantidad
-                        ps2.setInt(1, idcobro); //el ID generado en cobros
+                        ps2.setInt(1, idTicket); //el ID generado en cobros
                         ps2.setInt(2, (int) p[0]); //id_producto
                         ps2.setInt(3, (int) p[1]); //cantidad
                         ps2.addBatch(); //Acumula el producto en la lista
