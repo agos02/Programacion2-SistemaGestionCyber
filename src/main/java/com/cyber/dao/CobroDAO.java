@@ -20,6 +20,11 @@ public class CobroDAO {
         Connection con = null;
         try {
             con = ConexionBD.conectar();
+            //VALIDACIÓN DE SEGURIDAD: Si no hay conexión, frena acá
+            if (con == null) {
+                System.out.println("No se pudo realizar el cobro porque la base de datos está inaccesible.");
+                return false; // Retorna falso limpiamente para que el controlador muestre el cartel de error
+            }
             con.setAutoCommit(false); //Pausa el guardado automático (Inicia Transacción)
 
             int idTicket = -1;
@@ -78,11 +83,19 @@ public class CobroDAO {
     public List<Cobro> listar() {
         List<Cobro> lista = new ArrayList<>();
         String sql = "SELECT id_ticket, id_sesion, monto_sesion, monto_productos, monto_total, forma_pago, fecha_pago FROM cobros ORDER BY id_ticket DESC";
+    
+        Connection con = ConexionBD.conectar(); // Obtenemos la conexión primero
+    
+        // Validamos si la conexión falló, para cortar el método limpiamente
+        if (con == null) {
+            System.out.println("No se pudo listar el historial porque no hay conexión a la BD.");
+            return lista; // Devuelve la lista vacía en lugar de romper el programa
+        }
+
+        //Si hay conexión, procedemos con el bloque try-with-resources seguro
+        try (PreparedStatement ps = con.prepareStatement(sql);
+           ResultSet rs = ps.executeQuery()) {
         
-        try (Connection con = ConexionBD.conectar();
-             PreparedStatement ps = con.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
-            
             while (rs.next()) {
                 Cobro c = new Cobro();
                 c.setIdTicket(rs.getInt("id_ticket"));
@@ -92,12 +105,14 @@ public class CobroDAO {
                 c.setMontoTotal(rs.getDouble("monto_total"));
                 c.setFormaPago(rs.getString("forma_pago"));
                 c.setFechaPago(rs.getTimestamp("fecha_pago"));
-                
-                lista.add(c); //Agrega el cobro a la lista
+            
+                lista.add(c);
             }
         } catch (SQLException e) {
             System.out.println("Error al listar cobros.");
             e.printStackTrace();
+            } finally {
+            ConexionBD.cerrar(con); // Nos aseguramos de cerrarla siempre
         }
         return lista;
     }
