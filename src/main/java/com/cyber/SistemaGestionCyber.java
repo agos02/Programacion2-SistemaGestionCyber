@@ -3,7 +3,6 @@ package com.cyber;
 import com.cyber.controladores.ClienteControlador;
 import com.cyber.vistas.ClienteVista;
 import com.cyber.conexion.ConexionBD;
-import com.cyber.vistas.SesionVista;
 import java.sql.Connection;
 import com.cyber.vistas.productosviews;
 
@@ -20,9 +19,12 @@ public class SistemaGestionCyber {
            
             productosviews.mainProductos();
             
+<<<<<<< HEAD
             ConexionBD.cerrar(conexion); //Una vez probado cerramos la conexión inmediatament
             SesionVista.mainSesion();
             
+=======
+>>>>>>> feature/sesiones
             ConexionBD.cerrar(conexion); //Una vez probado, cerramos la conexión inmediatamente     
         } 
         else {
