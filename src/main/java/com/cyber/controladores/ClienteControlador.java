@@ -64,4 +64,14 @@ public class ClienteControlador {
     public List<Cliente> buscarPorDni(String dni) {
         return clienteDAO.buscarPorDni(dni);
     }
+    
+    
+    /**
+    * Consulta si un DNI ya está registrado en la base de datos.
+    * Utiliza el DAO para realizar la verificación.
+    */
+    public boolean existeDni(String dni) {
+    return clienteDAO.existeDni(dni);
+    }
+    
 }
