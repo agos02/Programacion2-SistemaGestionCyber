@@ -122,8 +122,7 @@ public class ProductoDAO {
     public boolean descontarStock(int idProducto, int cantidad) {
     String sql = "UPDATE productos SET stock = stock - ? WHERE id_producto = ? AND stock >= ?";
 
-    try (Connection con = ConexionBD.conectar();
-         PreparedStatement ps = con.prepareStatement(sql)) {
+    try ( PreparedStatement ps = conexion.prepareStatement(sql)) {
 
         ps.setInt(1, cantidad);
         ps.setInt(2, idProducto);
