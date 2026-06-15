@@ -1,11 +1,7 @@
 package com.cyber.vistas;
 
-import com.cyber.conexion.ConexionBD;
 import com.cyber.controladores.SesionControlador;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.time.LocalDateTime;
+import javax.swing.ListSelectionModel;
 
 public class SesionVista
     extends javax.swing.JFrame
@@ -13,15 +9,17 @@ public class SesionVista
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(SesionVista.class.getName());
     
     private SesionControlador controlador;
-    private LocalDateTime inicioSesion;
-    
     
     public SesionVista()
     {
         initComponents();
+        this.jTable1.setRowSelectionAllowed(true);
+        this.jTable1.setColumnSelectionAllowed(false);
+        this.jTable1.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        this.controlador = new SesionControlador();
+        this.controlador.actualizarTabla(this.jTable1);
         cargarClientes();
-        cargarPcDisponible();
-        controlador = new SesionControlador();
+        cargarPCDisponibles();
     }
 
     /**
@@ -40,10 +38,14 @@ public class SesionVista
         jLabel2 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(800, 500));
+        setPreferredSize(new java.awt.Dimension(650, 500));
 
+        jPanel1.setMinimumSize(new java.awt.Dimension(560, 600));
+        jPanel1.setPreferredSize(new java.awt.Dimension(560, 600));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1" }));
@@ -66,7 +68,7 @@ public class SesionVista
                 jButton1MouseClicked(evt);
             }
         });
-        jPanel1.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 150, -1, -1));
+        jPanel1.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 30, 110, -1));
 
         jButton2.setText("Finalizar Sesion");
         jButton2.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -74,17 +76,40 @@ public class SesionVista
                 jButton2MouseClicked(evt);
             }
         });
-        jPanel1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 150, -1, -1));
+        jPanel1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 70, -1, -1));
+
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
+            },
+            new String [] {
+                "ID Sesión", "ID Cliente", "Cliente", "PC", "Inicio"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane1.setViewportView(jTable1);
+
+        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 120, 570, 320));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 331, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 650, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 216, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -102,84 +127,41 @@ public class SesionVista
             System.out.println("Seleccione una computadora");
             return;
         }
+        String nombreSeleccionado = this.jComboBox1.getSelectedItem().toString();
+        String pcSeleccionada = this.jComboBox2.getSelectedItem().toString();
 
-        String pcSeleccionada = jComboBox2.getSelectedItem().toString();
-
-        int idCliente = 1; // temporal
+        int idCliente = this.controlador.obtenerIDPorNombre(nombreSeleccionado);
         int numero_pc = Integer.parseInt(pcSeleccionada);
 
-        controlador.iniciarSesion(idCliente, numero_pc);
+        this.controlador.iniciarSesion(idCliente, numero_pc, this.jTable1);
+        
+        this.jComboBox1.removeAllItems();
+        this.jComboBox2.removeAllItems();
+        
+        cargarClientes();
+        cargarPCDisponibles();
     }//GEN-LAST:event_jButton1MouseClicked
 
     private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseClicked
-        if (jComboBox2.getSelectedItem() == null)
-        {
-            System.out.println("Seleccione una computadora");
-            return;
-        }
-
-        String pcSeleccionada = jComboBox2.getSelectedItem().toString();
-
-        int numeroPc = Integer.parseInt(pcSeleccionada);
-
-        int idSesion = controlador.obtenerSesionActivaPorPc(numeroPc);
-
-        if(idSesion == 0)
-        {
-            System.out.println("No existe una sesión activa para esa PC");
-            return;
-        }
-
-        controlador.finalizarSesion(idSesion);  
+        this.controlador.finalizarSesion(this.jTable1, this.jComboBox1, this.jComboBox2);
     }//GEN-LAST:event_jButton2MouseClicked
 
     private void cargarClientes()
     {
         this.jComboBox1.removeAllItems();
-        String sql = "SELECT nombre FROM clientes";
-        
-        try
+        for (int i = 0; i < this.controlador.cargarClientes().size(); i++)
         {
-            PreparedStatement ps = ConexionBD.conectar().prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();
-
-            while (rs.next())
-            {
-                String nombre = rs.getString("nombre");
-                
-                this.jComboBox1.addItem(nombre);
-            }
-            rs.close();
-            ps.close();
-        }
-        catch (SQLException e)
-        {
-            e.printStackTrace();
+            this.jComboBox1.addItem(this.controlador.cargarClientes().get(i));
         }
     }
     
-    private void cargarPcDisponible()
+    private void cargarPCDisponibles()
     {
         this.jComboBox2.removeAllItems();
-        String sql = "SELECT numero_pc FROM computadoras WHERE estado = 'Libre'";
         
-        try 
+        for (int i = 0; i < this.controlador.cargarPCDisponibles().size(); i++)
         {
-            PreparedStatement ps = ConexionBD.conectar().prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();
-
-            while (rs.next())
-            {
-                int numero_pc = rs.getInt("numero_pc");
-                
-                this.jComboBox2.addItem("" + numero_pc);
-            }
-            rs.close();
-            ps.close();
-        }
-        catch (SQLException e)
-        {
-            e.printStackTrace();
+            this.jComboBox2.addItem("" + this.controlador.cargarPCDisponibles().get(i));
         }
     }
     
@@ -216,5 +198,7 @@ public class SesionVista
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables
 }

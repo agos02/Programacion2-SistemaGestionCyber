@@ -5,6 +5,7 @@ com\cyber\modelos\Computadora.class
 com\cyber\SistemaGestionCyber.class
 com\cyber\conexion\ConexionBD.class
 com\cyber\dao\SesionDAO.class
+com\cyber\vistas\SesionVista$3.class
 com\cyber\vistas\CobroVista.class
 com\cyber\dao\ClienteDAO.class
 com\cyber\modelos\Sesion.class
