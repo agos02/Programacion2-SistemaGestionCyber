@@ -12,10 +12,47 @@ import com.cyber.conexion.ConexionBD;
 
 public class ComputadoraDAO {
     
+    public Computadora buscarPorNumero(int numeroPC){
+
+        String sql = "SELECT * FROM computadoras WHERE numero_pc = ?";
+
+        Connection con = null;
+
+        try {
+
+            con = ConexionBD.conectar();
+
+            PreparedStatement ps = con.prepareStatement(sql);
+
+            ps.setInt(1, numeroPC);
+
+            ResultSet rs = ps.executeQuery();
+
+            if(rs.next()){
+
+                return new Computadora(
+                    rs.getInt("id_computadora"),
+                    rs.getInt("numero_pc"),
+                    rs.getString("estado")
+                );
+            }
+        } 
+        
+        catch(SQLException e){
+        e.printStackTrace();
+        } 
+        
+        finally {
+        ConexionBD.cerrar(con);
+        }
+
+        return null;
+    }
+    
     public List<Computadora> listar() {
 
         List<Computadora> computadoras = new ArrayList<>();
-        String sql = "SELECT * FROM computadoras";
+        String sql = "SELECT id_computadora, numero_pc, estado FROM computadoras";
         
         try (
             Connection con = ConexionBD.conectar();
