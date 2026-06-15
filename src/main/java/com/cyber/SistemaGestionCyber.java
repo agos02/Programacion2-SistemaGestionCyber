@@ -33,8 +33,6 @@ public class SistemaGestionCyber {
           java.awt.EventQueue.invokeLater(() -> {
         new ClienteVista().setVisible(true);
         });
-        
-        
     }
 }
   
