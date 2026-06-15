@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import java.sql.Timestamp;
 import java.util.List;
 import javax.swing.JOptionPane;
+import com.cyber.dao.ProductoDAO;
 
 public class CobroControlador {
     //Atributos (Las herramientas que el controlador necesita manejar)
@@ -96,17 +97,16 @@ public class CobroControlador {
     
     // Métodos secundarios para las señales a los otros DAOs de tus compañeros
     private void descontarStockProductos() {
-        // Aquí mandarás la señal al ProductoDAO cuando tu grupo lo tenga hecho
-        System.out.println("Señal enviada a ProductoDAO: Descontando stock de los productos vendidos.");
-        
-        /* Como lo integraría en productos.
-        for (Object[] p : this.carrito) {
-            int idProd = (int) p[0];
-            int cant = (int) p[1];
-            productoDAO.descontarStock(idProd, cant);
-        }
-        */
+    ProductoDAO productoDAO = new ProductoDAO();
+
+    for (Object[] p : this.carrito) {
+        int idProducto = (int) p[0];
+        int cantidad = (int) p[1];
+
+        productoDAO.descontarStock(idProducto, cantidad);
     }
+    }
+    
     
     private void liberarComputadora() {
         //Aquí mandarás la señal a ComputadoraDAO para poner la PC en estado 'Libre'

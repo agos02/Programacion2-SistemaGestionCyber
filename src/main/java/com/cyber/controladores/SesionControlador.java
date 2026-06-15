@@ -105,8 +105,7 @@ public class SesionControlador{
         System.out.println("TOTAL A COBRAR: $" + total);
         
         // Abrir ventana de cobro
-        CobroVista cobroVista = new CobroVista(id_sesiones, montoSesion, montoProductos);
-
+        CobroVista cobroVista= new CobroVista();
         cobroVista.setLocationRelativeTo(null);
         cobroVista.setVisible(true);
     }

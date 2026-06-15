@@ -21,6 +21,7 @@ public class CobroVista extends JFrame {
     
     // Instancia del DAO para cargar los datos
     private CobroDAO cobroDAO;
+    
 
     //Constructor de la ventana
     public CobroVista() {
