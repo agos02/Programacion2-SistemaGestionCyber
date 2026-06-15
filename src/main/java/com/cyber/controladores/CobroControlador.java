@@ -112,12 +112,13 @@ public class CobroControlador {
             productoDAO.descontarStock(idProducto, cantidad);
         }
     }
-    /*
+
     private void liberarComputadora() {
         System.out.println("Señal enviada a ComputadoraDAO: Liberando la PC asociada a la sesión " + this.idSesion);
         
         // Llamamos al método de la compañera de computadoras pasándole el id de la sesión actual
         computadoraDAO.cambiarEstadoALibre(this.idSesion);
     }
-    */
+
 }
+

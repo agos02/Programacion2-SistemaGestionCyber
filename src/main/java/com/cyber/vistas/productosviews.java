@@ -1,4 +1,4 @@
-package views;
+package com.cyber.vistas;
 import com.cyber.controladores.ProductoControlador;
 import com.cyber.modelos.Producto;
 import javax.swing.table.DefaultTableModel;

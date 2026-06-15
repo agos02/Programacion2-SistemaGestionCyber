@@ -118,4 +118,24 @@ public class ProductoDAO {
             e.printStackTrace();
         }
     }
+    // descontar stock
+    public boolean descontarStock(int idProducto, int cantidad) {
+    String sql = "UPDATE productos SET stock = stock - ? WHERE id_producto = ? AND stock >= ?";
+
+    try ( PreparedStatement ps = conexion.prepareStatement(sql)) {
+
+        ps.setInt(1, cantidad);
+        ps.setInt(2, idProducto);
+        ps.setInt(3, cantidad);
+
+        int filas = ps.executeUpdate();
+
+        return filas > 0;
+
+    } catch (SQLException e) {
+        System.out.println("Error al descontar stock");
+        e.printStackTrace();
+        return false;
+    }
+    }
 }
