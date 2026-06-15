@@ -76,7 +76,7 @@ public class SesionControlador{
         {
             combo2.addItem("" + cargarPCDisponibles().get(i));
         }
-        /*if (sesion == null)
+        if (sesion == null)
         {
             return;
         }
@@ -102,13 +102,13 @@ public class SesionControlador{
         
         System.out.println("Monto productos: $" + montoProductos);
 
-        System.out.println("TOTAL A COBRAR: $" + total);*/
+        System.out.println("TOTAL A COBRAR: $" + total);
         
         // Abrir ventana de cobro
-        /*CobroVista cobroVista = new CobroVista(idSesion, montoSesion, montoProductos);
+        CobroVista cobroVista = new CobroVista(id_sesiones, montoSesion, montoProductos);
 
         cobroVista.setLocationRelativeTo(null);
-        cobroVista.setVisible(true);*/
+        cobroVista.setVisible(true);
     }
     
     public int obtenerSesionActivaPorPc(int numeroPc)
