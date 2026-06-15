@@ -48,6 +48,31 @@ public class ComputadoraDAO {
 
         return null;
     }
+
+    public void cambiarEstadoALibre(int idSesion) {
+        
+        String sql = "UPDATE computadoras c " + 
+                     "JOIN sesiones s ON c.id_computadora = s.id_computadora " +
+                     "SET c.estado = 'Libre' " +
+                     "WHERE s.id_sesiones = ?";
+        Connection con = null;
+
+        try {
+
+            con = ConexionBD.conectar();
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setInt(1, idSesion);
+            ps.executeUpdate();
+        }
+        
+        catch(SQLException e) {
+            e.printStackTrace();
+        } 
+        
+        finally {
+            ConexionBD.cerrar(con);
+        }
+    }
     
     public List<Computadora> listar() {
 
