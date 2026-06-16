@@ -19,10 +19,12 @@ public class ProductoDAO {
 
             ps.setString(1, p.getNombre());
             ps.setDouble(2, p.getPrecio());
-            ps.setInt(3, p.getStock());
+            ps.setInt(3, p.getStock());//
 
             ps.executeUpdate();
-
+            //executeUpdate ejecuta consultas SQL que modifican la base de datosinsert ,update y delete
+            //sin esto esta preparada pero no ejecutada.
+            
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -36,9 +38,10 @@ public class ProductoDAO {
         String sql = "SELECT * FROM productos";
 
         try (PreparedStatement ps = conexion.prepareStatement(sql);
+                // Ejecuta la consulta SELECT y guarda los resultados obtenidos de la base de datos
              ResultSet rs = ps.executeQuery()) {
-
-            while (rs.next()) {
+                             //ejecuta select.
+            while (rs.next()) {//Mientras haya otra fila en la base de datos
 
                 Producto p = new Producto();
 
@@ -58,7 +61,7 @@ public class ProductoDAO {
     }
 
     // BUSCAR
-    public Producto buscarPorId(int id) {
+    public Producto buscarPorId(int id_producto) {
 
         Producto p = null;
 
@@ -66,7 +69,7 @@ public class ProductoDAO {
 
         try (PreparedStatement ps = conexion.prepareStatement(sql)) {
 
-            ps.setInt(1, id);
+            ps.setInt(1, id_producto);
 
             ResultSet rs = ps.executeQuery();
 
@@ -86,13 +89,13 @@ public class ProductoDAO {
     }
 
     // ELIMINAR
-    public void eliminar(int id) {
+    public void eliminar(int id_producto) {
 
         String sql = "DELETE FROM productos WHERE id_producto = ?";
 
         try (PreparedStatement ps = conexion.prepareStatement(sql)) {
 
-            ps.setInt(1, id);
+            ps.setInt(1, id_producto);
             ps.executeUpdate();
 
         } catch (Exception e) {
@@ -113,7 +116,7 @@ public class ProductoDAO {
             ps.setInt(4, p.getId_producto());
 
             ps.executeUpdate();
-
+            // ejecuta update, insert, o delete.
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -127,6 +130,7 @@ public class ProductoDAO {
         ps.setInt(1, cantidad);
         ps.setInt(2, idProducto);
         ps.setInt(3, cantidad);
+
 
         int filas = ps.executeUpdate();
 
