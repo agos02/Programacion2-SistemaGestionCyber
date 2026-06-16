@@ -24,7 +24,6 @@ public class SistemaGestionCyber {
         else {
             System.out.println("No se pudo conectar a la base de datos.");
         }
-<<<<<<< HEAD
         
         
           java.awt.EventQueue.invokeLater(() -> {
@@ -41,15 +40,6 @@ public class SistemaGestionCyber {
         
         
         
-        
-        
-        
-        
-        
-        
-        
-
-=======
->>>>>>> feature/sesiones
+     
     }
 }
