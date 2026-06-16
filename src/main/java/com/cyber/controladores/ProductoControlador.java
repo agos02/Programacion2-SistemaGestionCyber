@@ -9,7 +9,7 @@ public class ProductoControlador {
 //utiliza una instancia dao para realizar operaciones sobre la bd
     private final ProductoDAO dao = new ProductoDAO();
 
-    public void agregarProducto(Producto p) {//recibe el producto y llama al metodo de dao para guardar en bd
+    public void agregarProducto(Producto p) {
         dao.insertar(p);
     }
 
