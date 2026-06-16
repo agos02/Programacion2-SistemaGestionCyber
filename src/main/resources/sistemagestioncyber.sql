@@ -1,8 +1,8 @@
 -- MySQL dump 10.13  Distrib 8.0.46, for Win64 (x86_64)
 --
--- Host: localhost    Database: sistemagestioncyber
+-- Host: 127.0.0.1    Database: sistemagestioncyber
 -- ------------------------------------------------------
--- Server version	8.0.46
+-- Server version	5.5.5-10.4.32-MariaDB
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -23,13 +23,12 @@ DROP TABLE IF EXISTS `clientes`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `clientes` (
-  `id_cliente` int NOT NULL AUTO_INCREMENT,
+  `id_cliente` int(11) NOT NULL AUTO_INCREMENT,
   `nombre` varchar(30) NOT NULL,
   `dni` char(8) NOT NULL,
   `telefono` varchar(15) DEFAULT NULL,
-  PRIMARY KEY (`id_cliente`),
-  UNIQUE KEY `dni` (`dni`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  PRIMARY KEY (`id_cliente`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -49,17 +48,17 @@ DROP TABLE IF EXISTS `cobros`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `cobros` (
-  `id_ticket` int NOT NULL AUTO_INCREMENT,
-  `id_sesion` int DEFAULT NULL,
-  `monto_sesion` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `monto_productos` decimal(10,2) NOT NULL DEFAULT '0.00',
+  `id_ticket` int(11) NOT NULL AUTO_INCREMENT,
+  `id_sesion` int(11) DEFAULT NULL,
+  `monto_sesion` decimal(10,2) NOT NULL,
+  `monto_productos` decimal(10,2) NOT NULL,
   `monto_total` decimal(10,2) NOT NULL,
-  `forma_pago` varchar(50) NOT NULL,
-  `fecha_pago` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `forma_pago` varchar(50) DEFAULT NULL,
+  `fecha_pago` timestamp NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id_ticket`),
   KEY `id_sesion` (`id_sesion`),
   CONSTRAINT `cobros_ibfk_1` FOREIGN KEY (`id_sesion`) REFERENCES `sesiones` (`id_sesiones`) ON DELETE SET NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -79,13 +78,11 @@ DROP TABLE IF EXISTS `computadoras`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `computadoras` (
-  `id_computadora` int NOT NULL AUTO_INCREMENT,
-  `numero_pc` int NOT NULL,
-  `estado` varchar(50) NOT NULL DEFAULT 'Libre',
-  PRIMARY KEY (`id_computadora`),
-  UNIQUE KEY `numero_pc` (`numero_pc`),
-  CONSTRAINT `computadoras_chk_1` CHECK ((`estado` in (_utf8mb4'Libre',_utf8mb4'Ocupada',_utf8mb4'Mantenimiento')))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `id_computadora` int(11) NOT NULL AUTO_INCREMENT,
+  `numero_pc` int(11) NOT NULL,
+  `estado` varchar(50) NOT NULL,
+  PRIMARY KEY (`id_computadora`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -105,16 +102,14 @@ DROP TABLE IF EXISTS `detalle_cobros`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `detalle_cobros` (
-  `id_cobro` int NOT NULL AUTO_INCREMENT,
-  `id_ticket` int NOT NULL,
-  `id_producto` int NOT NULL,
-  `cantidad` int NOT NULL,
-  PRIMARY KEY (`id_cobro`),
-  KEY `id_ticket` (`id_ticket`),
+  `id_ticket` int(11) NOT NULL,
+  `id_producto` int(11) NOT NULL,
+  `cantidad` int(11) NOT NULL,
+  PRIMARY KEY (`id_ticket`,`id_producto`),
   KEY `id_producto` (`id_producto`),
   CONSTRAINT `detalle_cobros_ibfk_1` FOREIGN KEY (`id_ticket`) REFERENCES `cobros` (`id_ticket`) ON DELETE CASCADE,
-  CONSTRAINT `detalle_cobros_ibfk_2` FOREIGN KEY (`id_producto`) REFERENCES `productos` (`id_producto`) ON DELETE RESTRICT
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  CONSTRAINT `detalle_cobros_ibfk_2` FOREIGN KEY (`id_producto`) REFERENCES `productos` (`id_producto`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -134,12 +129,12 @@ DROP TABLE IF EXISTS `productos`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `productos` (
-  `id_producto` int NOT NULL AUTO_INCREMENT,
+  `id_producto` int(11) NOT NULL AUTO_INCREMENT,
   `nombre` varchar(100) NOT NULL,
   `precio` decimal(10,2) NOT NULL,
-  `stock` int NOT NULL DEFAULT '0',
+  `stock` int(11) NOT NULL,
   PRIMARY KEY (`id_producto`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -159,19 +154,18 @@ DROP TABLE IF EXISTS `sesiones`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `sesiones` (
-  `id_sesiones` int NOT NULL AUTO_INCREMENT,
-  `id_computadora` int NOT NULL,
-  `id_cliente` int NOT NULL,
-  `fecha_inicio` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `id_sesiones` int(11) NOT NULL AUTO_INCREMENT,
+  `id_computadora` int(11) DEFAULT NULL,
+  `id_cliente` int(11) DEFAULT NULL,
+  `fecha_inicio` timestamp NOT NULL DEFAULT current_timestamp(),
   `fecha_fin` timestamp NULL DEFAULT NULL,
-  `estado_sesion` varchar(50) NOT NULL DEFAULT 'Activa',
+  `estado_sesion` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id_sesiones`),
   KEY `id_computadora` (`id_computadora`),
   KEY `id_cliente` (`id_cliente`),
-  CONSTRAINT `sesiones_ibfk_1` FOREIGN KEY (`id_computadora`) REFERENCES `computadoras` (`id_computadora`) ON DELETE RESTRICT ON UPDATE CASCADE,
-  CONSTRAINT `sesiones_ibfk_2` FOREIGN KEY (`id_cliente`) REFERENCES `clientes` (`id_cliente`) ON DELETE RESTRICT ON UPDATE CASCADE,
-  CONSTRAINT `sesiones_chk_1` CHECK ((`estado_sesion` in (_utf8mb4'Activa',_utf8mb4'Finalizada')))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  CONSTRAINT `sesiones_ibfk_1` FOREIGN KEY (`id_computadora`) REFERENCES `computadoras` (`id_computadora`) ON DELETE SET NULL,
+  CONSTRAINT `sesiones_ibfk_2` FOREIGN KEY (`id_cliente`) REFERENCES `clientes` (`id_cliente`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -192,4 +186,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-06-02 19:52:02
+-- Dump completed on 2026-06-13 23:32:06
