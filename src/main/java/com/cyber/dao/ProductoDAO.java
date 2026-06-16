@@ -129,7 +129,7 @@ public class ProductoDAO {
 
         ps.setInt(1, cantidad);
         ps.setInt(2, idProducto);
-        ps.setInt(3, cantidad);
+        
 
 
         int filas = ps.executeUpdate();
