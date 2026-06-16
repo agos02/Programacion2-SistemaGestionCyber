@@ -11,6 +11,14 @@ import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import java.io.FileWriter; //PARA GENERAR REPORTE
+import java.io.PrintWriter;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import javax.swing.JFileChooser;
+
+
+
 public class ReportesViews extends javax.swing.JFrame {
     
    private ReportesControlador controlador = new ReportesControlador();
@@ -22,13 +30,130 @@ public class ReportesViews extends javax.swing.JFrame {
     private static final String ARCHIVO_HISTORIAL = "historial_consultas.dat";
     
    
-    
     public ReportesViews() {
         initComponents();
+        this.setLocationRelativeTo(null); //para centrar la ventana en la pantalla
         inicializarHistorial();
     }
     
-  
+  public void generarReporteGeneralCyber() { //METODO PARA GENERAR REPORTE
+    com.cyber.controladores.ReportesControlador controlador = new com.cyber.controladores.ReportesControlador();
+    StringBuilder sb = new StringBuilder();
+    
+    // 1. ENCABEZADO PRINCIPAL
+    sb.append("======================================================================\n");
+    sb.append("                 SISTEMA DE GESTIÓN CYBER - REPORTES                  \n");
+    sb.append("                    *** INFORME GENERAL TOTAL *** \n");
+    sb.append("======================================================================\n");
+    sb.append("Fecha y Hora de Emisión: ").append(java.time.LocalDateTime.now().toString().replace("T", " ").substring(0, 19)).append("\n");
+    sb.append("======================================================================\n\n");
+
+    try {
+        // ----------------------------------------------------------------
+        // SECCIÓN A: MÉTRICAS RÁPIDAS (Resumen de Totales)
+        // ----------------------------------------------------------------
+        sb.append("[ RESUMEN GENERAL DE ACTIVIDAD ]\n");
+        sb.append("----------------------------------------------------------------------\n");
+        sb.append(String.format("%-40s %s\n", "Cantidad Total de Clientes Registrados:", controlador.cantidadClientes()));
+        sb.append(String.format("%-40s %s\n", "Cantidad Histórica de Sesiones:", controlador.cantidadSesiones()));
+        sb.append(String.format("%-40s $%s\n", "Caja Total Histórica (Ingresos):", controlador.ingresosTotales()));
+        sb.append(String.format("%-40s $%s\n", "Valor Estimado del Stock de Productos:", controlador.valorTotalStock()));
+        sb.append("----------------------------------------------------------------------\n\n");
+
+        // ----------------------------------------------------------------
+        // SECCIÓN B: ESTADO DE LAS COMPUTADORAS
+        // ----------------------------------------------------------------
+        sb.append("[ RESUMEN DE COMPUTADORAS POR ESTADO ]\n");
+        sb.append("----------------------------------------------------------------------\n");
+        ResultSet rsPcs = controlador.cantidadPorEstado();
+        if (rsPcs != null) {
+            sb.append(String.format("%-25s %-15s\n", "ESTADO", "CANTIDAD"));
+            sb.append("----------------------------------------\n");
+            while (rsPcs.next()) {
+                sb.append(String.format("%-25s %-15s\n", rsPcs.getString("estado"), rsPcs.getInt("cantidad")));
+            }
+        }
+        sb.append("----------------------------------------------------------------------\n\n");
+
+        // ----------------------------------------------------------------
+        // SECCIÓN C: TOP 3 CLIENTES MÁS ACTIVOS
+        // ----------------------------------------------------------------
+        sb.append("[ TOP 3 CLIENTES CON MÁS SESIONES ]\n");
+        sb.append("----------------------------------------------------------------------\n");
+        ResultSet rsTop = controlador.top3Clientes();
+        if (rsTop != null) {
+            sb.append(String.format("%-10s %-30s %-20s\n", "ID", "NOMBRE", "CANTIDAD SESIONES"));
+            sb.append("----------------------------------------------------------------------\n");
+            while (rsTop.next()) {
+                sb.append(String.format("%-10s %-30s %-20s\n", 
+                        rsTop.getInt("id_cliente"), 
+                        rsTop.getString("nombre"), 
+                        rsTop.getInt("cantidad_sesiones")));
+            }
+        }
+        sb.append("----------------------------------------------------------------------\n\n");
+
+        // ----------------------------------------------------------------
+        // SECCIÓN D: INGRESOS POR FORMA DE PAGO
+        // ----------------------------------------------------------------
+        sb.append("[ BALANCE DE INGRESOS POR METODO DE PAGO ]\n");
+        sb.append("----------------------------------------------------------------------\n");
+        ResultSet rsPagos = controlador.ingresosFormaPago();
+        if (rsPagos != null) {
+            sb.append(String.format("%-30s %-20s\n", "FORMA DE PAGO", "TOTAL RECAUDADO"));
+            sb.append("--------------------------------------------------\n");
+            while (rsPagos.next()) {
+                sb.append(String.format("%-30s $%-20s\n", 
+                        rsPagos.getString("forma_pago"), 
+                        rsPagos.getDouble("ingresos_totales")));
+            }
+        }
+        sb.append("----------------------------------------------------------------------\n\n");
+
+        // ----------------------------------------------------------------
+        // SECCIÓN E: ALERTAS DE INVENTARIO (Poco Stock)
+        // ----------------------------------------------------------------
+        sb.append("[ ALERTAS DE CRÍTICAS DE STOCK (MENOS DE 5 UNIDADES) ]\n");
+        sb.append("----------------------------------------------------------------------\n");
+        ResultSet rsStock = controlador.pocoStock();
+        if (rsStock != null && rsStock.isBeforeFirst()) { // Verifica si hay filas
+            sb.append(String.format("%-40s %-15s\n", "PRODUCTO", "STOCK ACTUAL"));
+            sb.append("---------------------------------------------------------\n");
+            while (rsStock.next()) {
+                sb.append(String.format("%-40s %-15s\n", rsStock.getString("nombre"), rsStock.getInt("stock")));
+            }
+        } else {
+            sb.append("¡Todo perfecto! No hay productos con stock crítico.\n");
+        }
+        sb.append("======================================================================\n");
+        sb.append("                       FIN DEL INFORME CONSOLIDADO                     \n");
+        sb.append("======================================================================\n");
+
+        // ----------------------------------------------------------------
+        // GUARDADO DEL ARCHIVO MEDIANTE VENTANA FLOTANTE
+        // ----------------------------------------------------------------
+        JFileChooser archivoChooser = new JFileChooser();
+        archivoChooser.setSelectedFile(new java.io.File("Reporte_General_Cyber.txt"));
+        int seleccion = archivoChooser.showSaveDialog(this);
+        
+        if (seleccion == JFileChooser.APPROVE_OPTION) {
+            java.io.File archivo = archivoChooser.getSelectedFile();
+            FileWriter fw = new FileWriter(archivo);
+            PrintWriter pw = new PrintWriter(fw);
+            
+            pw.print(sb.toString()); // Escribe todo el contenido acumulado
+            
+            pw.close();
+            fw.close();
+            
+            javax.swing.JOptionPane.showMessageDialog(this, "¡Reporte General guardado con éxito!\n" + archivo.getAbsolutePath());
+        }
+
+    } catch (Exception e) {
+        javax.swing.JOptionPane.showMessageDialog(this, "Error al consolidar los datos del reporte.");
+        e.printStackTrace();
+    }
+}
 
 // === FUNCIÓN PARA ENLAZAR EL MODELO Y CARGAR EL ARCHIVO AUTOMÁTICAMENTE ===
     private void inicializarHistorial() {
@@ -185,6 +310,7 @@ public class ReportesViews extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         listHistorial = new javax.swing.JList<>();
         jLabel7 = new javax.swing.JLabel();
+        btnReporte = new javax.swing.JButton();
 
         jButton7.setText("jButton7");
 
@@ -333,6 +459,9 @@ public class ReportesViews extends javax.swing.JFrame {
 
         jLabel7.setText("HISTORIAL");
 
+        btnReporte.setText("Generar Reporte General");
+        btnReporte.addActionListener(this::btnReporteActionPerformed);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -343,6 +472,8 @@ public class ReportesViews extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnMenu)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnReporte, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(jScrollPane1)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING))
@@ -363,8 +494,10 @@ public class ReportesViews extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnMenu, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(23, 23, 23))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnMenu, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnReporte, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(22, 22, 22))
         );
 
         pack();
@@ -538,15 +671,12 @@ public class ReportesViews extends javax.swing.JFrame {
         ventanaMenu.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnMenuActionPerformed
+
+    private void btnReporteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReporteActionPerformed
+        generarReporteGeneralCyber();
+    }//GEN-LAST:event_btnReporteActionPerformed
     
-    
-    
-    
-    
-    
-    
-    
-    
+ 
     public static void main(String args[]) {
         
         try {
@@ -576,6 +706,7 @@ public class ReportesViews extends javax.swing.JFrame {
     private javax.swing.JButton btnComputadoras;
     private javax.swing.JButton btnMenu;
     private javax.swing.JButton btnProducto;
+    private javax.swing.JButton btnReporte;
     private javax.swing.JButton btnSesiones;
     private javax.swing.JButton jButton7;
     private javax.swing.JLabel jLabel1;

@@ -25,7 +25,7 @@ public class ClienteVista extends javax.swing.JFrame {
      */
         public ClienteVista() {
         initComponents();
-
+        this.setLocationRelativeTo(null); //para centrar la ventana en la pantalla
         controlador = new ClienteControlador();
         cargarTabla();
         }

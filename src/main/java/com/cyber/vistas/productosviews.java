@@ -11,6 +11,7 @@ public class productosviews extends javax.swing.JFrame {
     
     public productosviews() {
         initComponents(); //inicializa
+        this.setLocationRelativeTo(null); //para centrar la ventana en la pantalla
         cargarTabla();//carga los productos
         limpiarCampos(); //limpia los campos al iniciar
         

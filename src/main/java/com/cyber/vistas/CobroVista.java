@@ -151,14 +151,8 @@ public class CobroVista extends JFrame {
     public javax.swing.JButton getBtnConfirmarPago() { return btnConfirmarPago; }
     public javax.swing.JButton getBtnCancelar() { return btnCancelar; }
     
-    // Método temporal para probar SOLO la interfaz gráfica
+   
     public static void main(String[] args) {
-        javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                CobroVista vista = new CobroVista();
-                vista.setVisible(true);
-            }
-        });
+       
     }
 }

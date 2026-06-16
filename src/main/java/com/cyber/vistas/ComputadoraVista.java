@@ -11,6 +11,7 @@ public class ComputadoraVista extends javax.swing.JFrame {
     
     public ComputadoraVista() {
         initComponents();
+        this.setLocationRelativeTo(null); //para centrar la ventana en la pantalla
         //Creamos el DAO y conectamos el Controlador a esta Vista
         com.cyber.dao.ComputadoraDAO dao = new com.cyber.dao.ComputadoraDAO();
         new com.cyber.controladores.ComputadoraControlador(this, dao);

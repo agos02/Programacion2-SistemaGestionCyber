@@ -13,6 +13,7 @@ public class SesionVista
     public SesionVista()
     {
         initComponents();
+        this.setLocationRelativeTo(null); //para centrar la ventana en la pantalla
         this.jTable1.setRowSelectionAllowed(true);
         this.jTable1.setColumnSelectionAllowed(false);
         this.jTable1.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);

@@ -17,6 +17,7 @@ public class menu extends javax.swing.JFrame {
      */
     public menu() {
         initComponents();
+        this.setLocationRelativeTo(null); //para centrar la ventana en la pantalla
     }
 
     /**
@@ -137,7 +138,8 @@ public class menu extends javax.swing.JFrame {
     }//GEN-LAST:event_btnProductosActionPerformed
 
     private void btnCobrosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCobrosActionPerformed
-        CobroVista vista = new CobroVista();
+        java.util.List<Object[]> carritoVacio = new java.util.ArrayList<>();
+        CobroVista vista = new CobroVista(0, 0.0, 0.0, carritoVacio);
         vista.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnCobrosActionPerformed
