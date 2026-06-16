@@ -9,11 +9,9 @@ com\cyber\vistas\SesionVista$3.class
 com\cyber\vistas\CobroVista.class
 com\cyber\dao\ClienteDAO.class
 com\cyber\modelos\Sesion.class
-com\cyber\vistas\ReporteVista.class
 com\cyber\controladores\ComputadoraControlador.class
 com\cyber\controladores\CobroControlador.class
 com\cyber\vistas\ClienteVista.class
-com\cyber\vistas\ProductoVista.class
 com\cyber\modelos\Cliente.class
 com\cyber\vistas\SesionVista$2.class
 com\cyber\controladores\SesionControlador.class

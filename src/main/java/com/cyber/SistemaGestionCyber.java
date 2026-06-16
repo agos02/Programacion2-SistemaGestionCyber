@@ -1,6 +1,12 @@
 package com.cyber;
 
 import com.cyber.vistas.ClienteVista;
+import com.cyber.vistas.productosviews;
+import com.cyber.vistas.SesionVista;
+import com.cyber.vistas.ReportesViews;
+import com.cyber.vistas.CobroVista;
+import com.cyber.vistas.menu;
+
 import com.cyber.conexion.ConexionBD;
 import java.sql.Connection;
 
@@ -22,7 +28,7 @@ public class SistemaGestionCyber {
         }
         
         java.awt.EventQueue.invokeLater(() -> {
-        new ClienteVista().setVisible(true);
+        new menu().setVisible(true);
         });
     }
 }

@@ -7,6 +7,8 @@ public class ComputadoraVista extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ComputadoraVista.class.getName());
 
+    private javax.swing.JButton btnMenuPrincipal;
+    
     public ComputadoraVista() {
         initComponents();
     }
@@ -27,6 +29,13 @@ public class ComputadoraVista extends javax.swing.JFrame {
         NumeroPCInput = new javax.swing.JTextField();
         Title = new javax.swing.JLabel();
         EstadoSelector = new javax.swing.JComboBox<>();
+        
+        btnMenuPrincipal = new javax.swing.JButton();
+        btnMenuPrincipal.setText("Volver al Menú Principal");
+        btnMenuPrincipal.addActionListener(evt -> {
+        new menu().setVisible(true);
+        this.dispose();
+        });
 
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
@@ -111,7 +120,8 @@ public class ComputadoraVista extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(20, 20, 20)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 406, javax.swing.GroupLayout.PREFERRED_SIZE)
+                   .addComponent(btnMenuPrincipal)
+                   .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 406, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addGroup(layout.createSequentialGroup()
                             .addComponent(AgregarButton)
@@ -147,8 +157,11 @@ public class ComputadoraVista extends javax.swing.JFrame {
                     .addComponent(EliminarButton)
                     .addComponent(ModificarButton))
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 222, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(20, Short.MAX_VALUE))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 222, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(10, 10, 10)
+                    .addComponent(btnMenuPrincipal)
+                    .addContainerGap(20, 20)
+            )
         );
 
         pack();
