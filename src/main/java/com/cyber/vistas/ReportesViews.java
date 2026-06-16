@@ -5,14 +5,21 @@ import javax.swing.JOptionPane;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.DefaultListModel;
+import java.util.LinkedList;
+import java.io.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class ReportesViews extends javax.swing.JFrame {
     
-    private ReportesControlador controlador =
-            new ReportesControlador();
-    
+   private ReportesControlador controlador = new ReportesControlador();
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ReportesViews.class.getName());
     
+    // === NUEVOS CAMPOS PARA EL HISTORIAL Y SU PERSISTENCIA ===
+    private LinkedList<String> historial = new LinkedList<>();
+    private DefaultListModel<String> modeloHistorial = new DefaultListModel<>();
+    private static final String ARCHIVO_HISTORIAL = "historial_consultas.dat";
     
     
 
@@ -23,44 +30,138 @@ public class ReportesViews extends javax.swing.JFrame {
     
     public ReportesViews() {
         initComponents();
+        inicializarHistorial();
     }
     
   
 
-private void cargarTabla(ResultSet rs) {
+// === FUNCIÓN PARA ENLAZAR EL MODELO Y CARGAR EL ARCHIVO AUTOMÁTICAMENTE ===
+    private void inicializarHistorial() {
+        listHistorial.setModel(modeloHistorial); // Reemplaza el modelo dummy de NetBeans por el nuestro
+        cargarHistorialDesdeArchivo();           // Intenta leer el archivo .dat si ya existe
+        
+        // Evento de escucha: Al presionar una consulta del historial, se muestra en la tabla
+        listHistorial.addListSelectionListener(evt -> {
+            if (!evt.getValueIsAdjusting()) {
+                String seleccionado = listHistorial.getSelectedValue();
+                if (seleccionado != null) {
+                    mostrarConsultaSeleccionadaEnTabla(seleccionado);
+                }
+            }
+        });
+    }
 
-    try {
+    private void cargarTabla(ResultSet rs) {
+        try {
+            DefaultTableModel modelo = new DefaultTableModel();
+            ResultSetMetaData meta = rs.getMetaData();
+            int columnas = meta.getColumnCount();
 
-        DefaultTableModel modelo = new DefaultTableModel();
-
-        ResultSetMetaData meta = rs.getMetaData();
-
-        int columnas = meta.getColumnCount();
-
-        // Agregar nombres de columnas
-        for (int i = 1; i <= columnas; i++) {
-            modelo.addColumn(meta.getColumnName(i));
-        }
-
-        // Agregar filas
-        while (rs.next()) {
-
-            Object[] fila = new Object[columnas];
-
-            for (int i = 0; i < columnas; i++) {
-                fila[i] = rs.getObject(i + 1);
+            // Agregar nombres de columnas
+            for (int i = 1; i <= columnas; i++) {
+                modelo.addColumn(meta.getColumnName(i));
             }
 
-            modelo.addRow(fila);
+            // Agregar filas
+            while (rs.next()) {
+                Object[] fila = new Object[columnas];
+                for (int i = 0; i < columnas; i++) {
+                    fila[i] = rs.getObject(i + 1);
+                }
+                modelo.addRow(fila);
+            }
+            tblReportes.setModel(modelo);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+            
+    // === TU FUNCIÓN MODIFICADA CON LÍMITE DE 15 Y GUARDADO AUTOMÁTICO ===
+    private void agregarHistorial(String consulta) {
+        historial.addFirst(consulta);
+
+        if (historial.size() > 15) {
+            historial.removeLast();
         }
 
-        tblReportes.setModel(modelo);
-
-    } catch (Exception e) {
-        e.printStackTrace();
+        modeloHistorial.clear();
+        for (String item : historial) {
+            modeloHistorial.addElement(item);
+        }
+        
+        guardarHistorialEnArchivo(); // Se guarda solo en cada nueva consulta
     }
-}
-            
+    
+    // === MÉTODOS DE SERIALIZACIÓN (EL ARCHIVO SE CREA SOLO) ===
+    private void guardarHistorialEnArchivo() {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(ARCHIVO_HISTORIAL))) {
+            oos.writeObject(historial);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private void cargarHistorialDesdeArchivo() {
+        File archivo = new File(ARCHIVO_HISTORIAL);
+        if (!archivo.exists()) {
+            return; // Si no existe, no hace nada (se creará solo al guardar)
+        }
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(archivo))) {
+            historial = (LinkedList<String>) ois.readObject();
+            modeloHistorial.clear();
+            for (String item : historial) {
+                modeloHistorial.addElement(item);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    // === MUESTRA EXCLUSIVAMENTE LAS CONSULTAS DE CANTIDAD EN LA JTABLE ===
+    private void mostrarCantidadEnTabla(String concepto, Object cantidad) {
+        DefaultTableModel modelo = new DefaultTableModel();
+        modelo.addColumn("Concepto deseado");
+        modelo.addColumn("Cantidad");
+        modelo.addRow(new Object[]{concepto, cantidad});
+        tblReportes.setModel(modelo);
+    }
+    
+    // === PARSEADOR PARA CUANDO SE SELECCIONA EL HISTORIAL ===
+    private void mostrarConsultaSeleccionadaEnTabla(String seleccionado) {
+        try {
+            if (seleccionado.contains("Cantidad de clientes:")) {
+                String[] partes = seleccionado.split("Cantidad de clientes: ");
+                mostrarCantidadEnTabla("Clientes", partes[1].trim());
+            } else if (seleccionado.contains("Cantidad de sesiones:")) {
+                String[] partes = seleccionado.split("Cantidad de sesiones: ");
+                mostrarCantidadEnTabla("Sesiones", partes[1].trim());
+            } else if (seleccionado.contains("Ingresos totales: $")) {
+                String[] partes = seleccionado.split("Ingresos totales: \\$");
+                mostrarCantidadEnTabla("Ingresos Totales", "$" + partes[1].trim());
+            } else {
+                // Para consultas de listados extensos informamos qué tipo de consulta era
+                DefaultTableModel modelo = new DefaultTableModel();
+                modelo.addColumn("Historial");
+                modelo.addColumn("Detalle de Consulta Realizada");
+                String limpio = seleccionado.substring(seleccionado.indexOf("]") + 1).trim();
+                modelo.addRow(new Object[]{"Listado", limpio});
+                tblReportes.setModel(modelo);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    // === FUNCIÓN AUXILIAR PARA GENERAR LA FECHA Y HORA CON MINUTOS Y SEGUNDOS ===
+    private String obtenerFechaHoraActual() {
+        LocalDateTime ahora = LocalDateTime.now();
+        DateTimeFormatter formateador = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+        return ahora.format(formateador);
+    }
+
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -86,6 +187,9 @@ private void cargarTabla(ResultSet rs) {
         jScrollPane1 = new javax.swing.JScrollPane();
         tblReportes = new javax.swing.JTable();
         btnMenu = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        listHistorial = new javax.swing.JList<>();
+        jLabel7 = new javax.swing.JLabel();
 
         jButton7.setText("jButton7");
 
@@ -144,7 +248,7 @@ private void cargarTabla(ResultSet rs) {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 358, Short.MAX_VALUE)
+                            .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 470, Short.MAX_VALUE)
                             .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -225,6 +329,15 @@ private void cargarTabla(ResultSet rs) {
         btnMenu.setText("Volver al Menú Principal");
         btnMenu.addActionListener(this::btnMenuActionPerformed);
 
+        listHistorial.setModel(new javax.swing.AbstractListModel<String>() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public String getElementAt(int i) { return strings[i]; }
+        });
+        jScrollPane2.setViewportView(listHistorial);
+
+        jLabel7.setText("HISTORIAL");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -233,18 +346,27 @@ private void cargarTabla(ResultSet rs) {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 754, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnMenu)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel7)
+                .addGap(356, 356, 356))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 50, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(28, 28, 28)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(48, 48, 48)
+                .addComponent(jLabel7)
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnMenu, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(23, 23, 23))
@@ -260,26 +382,26 @@ private void cargarTabla(ResultSet rs) {
     private void btnClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClientesActionPerformed
 
     String opcion = ComboClientes.getSelectedItem().toString();
+        String tiempo = obtenerFechaHoraActual();
 
-    switch(opcion) {
+        switch(opcion) {
+            case "Cantidad de clientes":
+                int cantClientes = controlador.cantidadClientes();
+                mostrarCantidadEnTabla("Clientes", cantClientes);
+                agregarHistorial("[" + tiempo + "] Cantidad de clientes: " + cantClientes);
+                break;
 
-        case "Cantidad de clientes":
-            JOptionPane.showMessageDialog(
-                this,
-                "Cantidad de clientes: " +
-                controlador.cantidadClientes()
-            );
-            break;
+            case "Listar clientes":
+                cargarTabla(controlador.listarClientes());
+                agregarHistorial("[" + tiempo + "] Listar clientes");
+                break;
 
-        case "Listar clientes":
-            cargarTabla(controlador.listarClientes());
-            break;
-
-        case "Top 3 clientes":
-            cargarTabla(controlador.top3Clientes());
-            break;
-    }
-
+            case "Top 3 clientes":
+                cargarTabla(controlador.top3Clientes());
+                agregarHistorial("[" + tiempo + "] Top 3 clientes");
+                break;
+        }
+    
     }//GEN-LAST:event_btnClientesActionPerformed
 
     
@@ -287,22 +409,20 @@ private void cargarTabla(ResultSet rs) {
     private void btnSesionesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSesionesActionPerformed
        
         String opcion = ComboSesiones.getSelectedItem().toString();
+        String tiempo = obtenerFechaHoraActual();
 
-    switch(opcion) {
+        switch(opcion) {
+            case "Cantidad de sesiones":
+                int cantSesiones = controlador.cantidadSesiones();
+                mostrarCantidadEnTabla("Sesiones", cantSesiones);
+                agregarHistorial("[" + tiempo + "] Cantidad de sesiones: " + cantSesiones);
+                break;
 
-        case "Cantidad de sesiones":
-            JOptionPane.showMessageDialog(
-                this,
-                "Cantidad de sesiones: " +
-                controlador.cantidadSesiones()
-            );
-            break;
-
-        case "Listar sesiones":
-            cargarTabla(controlador.listarSesiones());
-            break;
-    }
-    
+            case "Listar sesiones":
+                cargarTabla(controlador.listarSesiones());
+                agregarHistorial("[" + tiempo + "] Listar sesiones");
+                break;
+        }
     }//GEN-LAST:event_btnSesionesActionPerformed
 
     private void ComboSesionesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ComboSesionesActionPerformed
@@ -316,27 +436,30 @@ private void cargarTabla(ResultSet rs) {
     }//GEN-LAST:event_ComboComputadorasActionPerformed
 
     private void btnComputadorasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnComputadorasActionPerformed
-
-    String opcion = ComboComputadoras.getSelectedItem().toString();
-
+        String opcion = ComboComputadoras.getSelectedItem().toString();
+        String tiempo = obtenerFechaHoraActual();
+        
     switch(opcion) {
+            case "Listar computadoras":
+                cargarTabla(controlador.obtenerComputadoras());
+                agregarHistorial("[" + tiempo + "] Listar computadoras");
+                break;
 
-        case "Listar computadoras":
-            cargarTabla(controlador.obtenerComputadoras());
-            break;
+            case "Ver estados":
+                cargarTabla(controlador.estadoComputadoras());
+                agregarHistorial("[" + tiempo + "] Ver estados");
+                break;
 
-        case "Ver estados":
-            cargarTabla(controlador.estadoComputadoras());
-            break;
+            case "Computadoras disponibles":
+                cargarTabla(controlador.computadorasDisponibles());
+                agregarHistorial("[" + tiempo + "] Computadoras disponibles");
+                break;
 
-        case "Computadoras disponibles":
-            cargarTabla(controlador.computadorasDisponibles());
-            break;
-
-        case "Cantidad por estado":
-            cargarTabla(controlador.cantidadPorEstado());
-            break;
-    }
+            case "Cantidad por estado":
+                cargarTabla(controlador.cantidadPorEstado());
+                agregarHistorial("[" + tiempo + "] Cantidad por estado");
+                break;
+        }
 
     }//GEN-LAST:event_btnComputadorasActionPerformed
     
@@ -349,33 +472,39 @@ private void cargarTabla(ResultSet rs) {
     private void btnProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProductoActionPerformed
         
         String opcion = ComboProductos.getSelectedItem().toString();
+        String tiempo = obtenerFechaHoraActual();
 
-    switch(opcion) {
+        switch(opcion) {
+            case "Listar productos":
+                cargarTabla(controlador.obtenerProducto());
+                agregarHistorial("[" + tiempo + "] Listar productos");
+                break;
 
-        case "Listar productos":
-            cargarTabla(controlador.obtenerProducto());
-            break;
+            case "Por precio ASC":
+                cargarTabla(controlador.productoPrecio());
+                agregarHistorial("[" + tiempo + "] Por precio ASC");
+                break;
 
-        case "Por precio ASC":
-            cargarTabla(controlador.productoPrecio());
-            break;
+            case "Mas vendido":
+                cargarTabla(controlador.MasVendido());
+                agregarHistorial("[" + tiempo + "] Mas vendido");
+                break;
 
-        case "Mas vendido":
-            cargarTabla(controlador.MasVendido());
-            break;
+            case "Poco stock":
+                cargarTabla(controlador.pocoStock());
+                agregarHistorial("[" + tiempo + "] Poco stock");
+                break;
 
-        case "Poco stock":
-            cargarTabla(controlador.pocoStock());
-            break;
+            case "Mas caro":
+                cargarTabla(controlador.productoMasCaro());
+                agregarHistorial("[" + tiempo + "] Mas caro");
+                break;
 
-        case "Mas caro":
-            cargarTabla(controlador.productoMasCaro());
-            break;
-
-        case "Mas barato":
-            cargarTabla(controlador.productoMasBarato());
-            break;
-    }
+            case "Mas barato":
+                cargarTabla(controlador.productoMasBarato());
+                agregarHistorial("[" + tiempo + "] Mas barato");
+                break;
+        }
     }//GEN-LAST:event_btnProductoActionPerformed
         
         //COBROS
@@ -386,25 +515,25 @@ private void cargarTabla(ResultSet rs) {
     private void btnCobrosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCobrosActionPerformed
         
         String opcion = ComboCobros.getSelectedItem().toString();
+        String tiempo = obtenerFechaHoraActual();
 
-    switch(opcion) {
+        switch(opcion) {
+            case "Obtener cobros":
+                cargarTabla(controlador.obtenerCobros());
+                agregarHistorial("[" + tiempo + "] Obtener cobros");
+                break;
 
-        case "Obtener cobros":
-            cargarTabla(controlador.obtenerCobros());
-            break;
+            case "Ingresos totales":
+                double ingresos = controlador.ingresosTotales();
+                mostrarCantidadEnTabla("Ingresos Totales", "$" + ingresos);
+                agregarHistorial("[" + tiempo + "] Ingresos totales: $" + ingresos);
+                break;
 
-        case "Ingresos totalles":
-            JOptionPane.showMessageDialog(
-                this,
-                "Ingresos totales: $" +
-                controlador.ingresosTotales()
-            );
-            break;
-
-        case "Ingresos por forma de pago":
-            cargarTabla(controlador.ingresosFormaPago());
-            break;
-    }
+            case "Ingresos por forma de pago":
+                cargarTabla(controlador.ingresosFormaPago());
+                agregarHistorial("[" + tiempo + "] Ingresos por forma de pago");
+                break;
+        }
     }//GEN-LAST:event_btnCobrosActionPerformed
 
     
@@ -460,8 +589,11 @@ private void cargarTabla(ResultSet rs) {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JList<String> listHistorial;
     private javax.swing.JTable tblReportes;
     // End of variables declaration//GEN-END:variables
 }
