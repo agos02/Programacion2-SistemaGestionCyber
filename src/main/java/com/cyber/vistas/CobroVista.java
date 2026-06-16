@@ -26,11 +26,14 @@ public class CobroVista extends JFrame {
     
 
     //Constructor de la ventana
-    public CobroVista() {
+    public CobroVista(int idSesion, double montoPC, double montoKiosco, List<Object[]> carrito) {
         cobroDAO = new CobroDAO();
         configurarVentana();
         inicializarComponentes();
-        cargarHistorial(); // Llena la tabla apenas se abre la pantalla
+        cargarHistorial(); // Llena la tabla con los cobros anteriores
+        
+        //Instanciamos el controlador para que maneje ESTA ventana
+        new com.cyber.controladores.CobroControlador(this, idSesion, montoPC, montoKiosco, carrito);
     }
 
     // Configuración básica del JFrame

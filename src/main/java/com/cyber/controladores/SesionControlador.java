@@ -104,8 +104,10 @@ public class SesionControlador{
 
         System.out.println("TOTAL A COBRAR: $" + total);
         
+        java.util.List<Object[]> carritoVacío = new java.util.ArrayList<>();
+        
         // Abrir ventana de cobro
-        CobroVista cobroVista= new CobroVista();
+        CobroVista cobroVista = new CobroVista(id_sesiones, montoSesion, montoProductos, carritoVacío);
         cobroVista.setLocationRelativeTo(null);
         cobroVista.setVisible(true);
     }
