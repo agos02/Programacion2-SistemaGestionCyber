@@ -88,22 +88,6 @@ public class SesionDAO {
 
         try
         {
-            String sqlBuscarPc = "SELECT id_computadora FROM sesiones WHERE id_sesiones = ?";
-
-            PreparedStatement psBuscar = conexion.prepareStatement(sqlBuscarPc);
-            psBuscar.setInt(1, idSesion);
-
-            ResultSet rs = psBuscar.executeQuery();
-
-            int idComputadora = -1;
-
-            if(rs.next())
-            {
-                idComputadora = rs.getInt("id_computadora");
-            }
-            rs.close();
-            psBuscar.close();
-
             // Finalizar la sesión
             String sqlSesion = "UPDATE sesiones SET fecha_fin = NOW(), estado_sesion = 'Finalizada' WHERE id_sesiones = ?";
 
@@ -111,18 +95,6 @@ public class SesionDAO {
             psSesion.setInt(1, idSesion);
             psSesion.executeUpdate();
             psSesion.close();
-
-            // Liberar la computadora
-            if(idComputadora != -1)
-            {
-                String sqlPc = "UPDATE computadoras SET estado = 'Libre' WHERE id_computadora = ?";
-
-                PreparedStatement psPc = conexion.prepareStatement(sqlPc);
-                psPc.setInt(1, idComputadora);
-
-                psPc.executeUpdate();
-                psPc.close();
-            }
         }
         catch(SQLException e)
         {
