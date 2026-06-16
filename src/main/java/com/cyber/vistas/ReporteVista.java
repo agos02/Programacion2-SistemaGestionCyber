@@ -1,5 +1,5 @@
 package com.cyber.vistas;
 
-public class CobroVista {
+public class ReporteVista {
     
 }

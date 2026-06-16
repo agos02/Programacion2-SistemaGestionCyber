@@ -8,6 +8,6 @@ package com.cyber.modelos;
  *
  * @author rosch
  */
-public class Sesion {
+public class Producto {
     
 }
