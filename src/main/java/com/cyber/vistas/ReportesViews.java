@@ -21,12 +21,7 @@ public class ReportesViews extends javax.swing.JFrame {
     private DefaultListModel<String> modeloHistorial = new DefaultListModel<>();
     private static final String ARCHIVO_HISTORIAL = "historial_consultas.dat";
     
-    
-
-    
-    
-    
-    
+   
     
     public ReportesViews() {
         initComponents();

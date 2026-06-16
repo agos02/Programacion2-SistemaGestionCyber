@@ -8,21 +8,23 @@ import com.cyber.modelos.Producto;
 
 public class ProductoDAO {
 
-    private final Connection conexion = ConexionBD.conectar();
 
     // INSERTAR
     public void insertar(Producto p) {
 
         String sql = "INSERT INTO productos(nombre, precio, stock) VALUES (?, ?, ?)";
 
-        try (PreparedStatement ps = conexion.prepareStatement(sql)) {
+      
+       try (Connection conexion = ConexionBD.conectar();
+         PreparedStatement ps = conexion.prepareStatement(sql)) {
 
             ps.setString(1, p.getNombre());
             ps.setDouble(2, p.getPrecio());
-            ps.setInt(3, p.getStock());
+            ps.setInt(3, p.getStock());//
 
             ps.executeUpdate();
-
+            
+            
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -35,10 +37,13 @@ public class ProductoDAO {
 
         String sql = "SELECT * FROM productos";
 
-        try (PreparedStatement ps = conexion.prepareStatement(sql);
+        try (Connection conexion = ConexionBD.conectar();
+                PreparedStatement ps = conexion.prepareStatement(sql);
+                
+                // Ejecuta la consulta SELECT y guarda los resultados obtenidos de la base de datos
              ResultSet rs = ps.executeQuery()) {
-
-            while (rs.next()) {
+                             
+            while (rs.next()) {//Mientras haya otra fila en la base de datos
 
                 Producto p = new Producto();
 
@@ -58,17 +63,18 @@ public class ProductoDAO {
     }
 
     // BUSCAR
-    public Producto buscarPorId(int id) {
+    public Producto buscarPorId(int id_producto) {
 
         Producto p = null;
 
         String sql = "SELECT * FROM productos WHERE id_producto = ?";
 
-        try (PreparedStatement ps = conexion.prepareStatement(sql)) {
+        try (Connection conexion = ConexionBD.conectar();
+             PreparedStatement ps = conexion.prepareStatement(sql)){
 
-            ps.setInt(1, id);
+            ps.setInt(1, id_producto);
 
-            ResultSet rs = ps.executeQuery();
+            try (ResultSet rs = ps.executeQuery()) {
 
             if (rs.next()) {
                 p = new Producto();
@@ -77,6 +83,7 @@ public class ProductoDAO {
                 p.setPrecio(rs.getDouble("precio"));
                 p.setStock(rs.getInt("stock"));
             }
+          }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -84,15 +91,16 @@ public class ProductoDAO {
 
         return p;
     }
-
+    
     // ELIMINAR
-    public void eliminar(int id) {
+    public void eliminar(int id_producto) {
 
         String sql = "DELETE FROM productos WHERE id_producto = ?";
 
-        try (PreparedStatement ps = conexion.prepareStatement(sql)) {
+        try (Connection conexion = ConexionBD.conectar();
+                PreparedStatement ps = conexion.prepareStatement(sql)) {
 
-            ps.setInt(1, id);
+            ps.setInt(1, id_producto);
             ps.executeUpdate();
 
         } catch (Exception e) {
@@ -105,7 +113,8 @@ public class ProductoDAO {
 
         String sql = "UPDATE productos SET nombre=?, precio=?, stock=? WHERE id_producto=?";
 
-        try (PreparedStatement ps = conexion.prepareStatement(sql)) {
+        try (Connection conexion = ConexionBD.conectar();
+                PreparedStatement ps = conexion.prepareStatement(sql)) {
 
             ps.setString(1, p.getNombre());
             ps.setDouble(2, p.getPrecio());
@@ -113,7 +122,7 @@ public class ProductoDAO {
             ps.setInt(4, p.getId_producto());
 
             ps.executeUpdate();
-
+            
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -122,11 +131,13 @@ public class ProductoDAO {
     public boolean descontarStock(int idProducto, int cantidad) {
     String sql = "UPDATE productos SET stock = stock - ? WHERE id_producto = ? AND stock >= ?";
 
-    try ( PreparedStatement ps = conexion.prepareStatement(sql)) {
+    try ( Connection conexion = ConexionBD.conectar();
+            PreparedStatement ps = conexion.prepareStatement(sql)) {
 
         ps.setInt(1, cantidad);
         ps.setInt(2, idProducto);
-        
+        ps.setInt(3, cantidad);
+
 
         int filas = ps.executeUpdate();
 

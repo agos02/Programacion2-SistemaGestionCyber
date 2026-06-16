@@ -89,10 +89,8 @@ public class productosviews extends javax.swing.JFrame {
 
         jTextField2.setText("precio");
         jTextField2.setName("precio"); // NOI18N
-        jTextField2.addActionListener(this::jTextField2ActionPerformed);
 
         jTextField3.setText("stock");
-        jTextField3.addActionListener(this::jTextField3ActionPerformed);
 
         jButton1.setText("Agregar");
         jButton1.addActionListener(this::jButton1ActionPerformed);
@@ -240,24 +238,32 @@ public class productosviews extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-//modificar producto 
+
+  //modificar      
+  try {
     Producto p = new Producto();
 
-    p.setId_producto(Integer.parseInt(jTextField4.getText()));
-    p.setNombre(jTextField1.getText());
-    p.setPrecio(Double.parseDouble(jTextField2.getText()));
-    p.setStock(Integer.parseInt(jTextField3.getText()));
+    p.setId_producto(Integer.parseInt(jTextField4.getText().trim()));
+    p.setNombre(jTextField1.getText().trim());
+    p.setPrecio(Double.parseDouble(jTextField2.getText().trim()));
+    p.setStock(Integer.parseInt(jTextField3.getText().trim()));
 
     ProductoControlador ctrl = new ProductoControlador();
     ctrl.modificarProducto(p);
 
     cargarTabla();
     limpiarCampos();
-        // TODO add your handling code here:
+
+} catch (NumberFormatException e) {
+    JOptionPane.showMessageDialog(null, "Revisá los campos numéricos (ID, precio y stock)");
+
+} catch (Exception e) {
+    JOptionPane.showMessageDialog(null, "Error al modificar el producto: " + e.getMessage());
+}
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-   
+    //agregar
     try {
 
         // convertir datos
@@ -318,26 +324,24 @@ public class productosviews extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton4ActionPerformed
     
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-//eliminar produccto
-    int id = Integer.parseInt(jTextField4.getText());
+     //eliminar 
+  try {
+    int id = Integer.parseInt(jTextField4.getText().trim());
 
     ProductoControlador ctrl = new ProductoControlador();
     ctrl.eliminarProducto(id);
 
     cargarTabla();
     limpiarCampos();
-     // TODO add your handling code here:
+
+} catch (NumberFormatException e) {
+    JOptionPane.showMessageDialog(null, "Ingrese un ID válido (solo números)");
+
+} catch (Exception e) {
+    JOptionPane.showMessageDialog(null, "Error al eliminar el producto: " + e.getMessage());
+}
+  
     }//GEN-LAST:event_jButton3ActionPerformed
-
-    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
-//validar precio
-    
-// TODO add your handling code here:
-    }//GEN-LAST:event_jTextField2ActionPerformed
-
-    private void jTextField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField3ActionPerformed
-    
-    }//GEN-LAST:event_jTextField3ActionPerformed
 
     //Botón que te lleva al menú principal de la aplicación
     private void btnProductosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProductosActionPerformed

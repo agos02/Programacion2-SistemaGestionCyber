@@ -7,11 +7,11 @@ public class Producto {
     private double precio;
     private int stock;
 
-    
+    //constructor vacio
     public Producto() {
     }
 
-  
+  //con parametros 
     public Producto(int id_producto, String nombre, double precio, int stock) {
         this.id_producto = id_producto;
         this.nombre = nombre;
@@ -20,7 +20,7 @@ public class Producto {
     }
 
   
-
+    // get y set
     public int getId_producto() {
         return id_producto;
     }
