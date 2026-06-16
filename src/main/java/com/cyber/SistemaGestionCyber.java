@@ -1,45 +1,22 @@
 package com.cyber;
-import com.cyber.controladores.ClienteControlador;
-import com.cyber.vistas.ClienteVista;
 
 import com.cyber.conexion.ConexionBD;
-import com.cyber.vistas.SesionVista;
 import java.sql.Connection;
 
 public class SistemaGestionCyber {
 
-    public static void main(String[] args) throws Exception{
+    public static void main(String[] args) {
         
         Connection conexion = ConexionBD.conectar();  //Intentamos conectarnos a la base de datos
-       
-        //Verificamos si la conexión funcionó
-        if (conexion != null) 
-        {
+
+        if (conexion != null) {     //Verificamos si la conexión funcionó
             System.out.println("La conexión funciona correctamente.");
             
-            SesionVista.mainSesion();
+            ConexionBD.cerrar(conexion); //Una vez probado, cerramos la conexión inmediatamente
             
-            ConexionBD.cerrar(conexion); //Una vez probado, cerramos la conexión inmediatamente     
-        } 
-        else {
+        } else {
             System.out.println("No se pudo conectar a la base de datos.");
         }
-        
-        
-          java.awt.EventQueue.invokeLater(() -> {
-        new ClienteVista().setVisible(true);
-        });
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-     
+
     }
 }
