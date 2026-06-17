@@ -7,6 +7,8 @@ import java.util.List;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
+import com.cyber.vistas.menu;
+
 public class CobroVista extends JFrame {
 
     // Componentes del formulario (Atributos de la clase)
@@ -21,13 +23,17 @@ public class CobroVista extends JFrame {
     
     // Instancia del DAO para cargar los datos
     private CobroDAO cobroDAO;
+    
 
     //Constructor de la ventana
-    public CobroVista() {
+    public CobroVista(int idSesion, double montoPC, double montoKiosco, List<Object[]> carrito) {
         cobroDAO = new CobroDAO();
         configurarVentana();
         inicializarComponentes();
-        cargarHistorial(); // Llena la tabla apenas se abre la pantalla
+        cargarHistorial(); // Llena la tabla con los cobros anteriores
+        
+        //Instanciamos el controlador para que maneje ESTA ventana
+        new com.cyber.controladores.CobroControlador(this, idSesion, montoPC, montoKiosco, carrito);
     }
 
     // Configuración básica del JFrame
@@ -99,6 +105,22 @@ public class CobroVista extends JFrame {
         scrollTabla.setBorder(BorderFactory.createTitledBorder("Historial de los últimos cobros del día"));
 
         add(scrollTabla, BorderLayout.CENTER);
+        
+        
+        //Botón para volver al menú principal de la aplicación
+        JButton btnMenuPrincipal = new JButton("Volver al Menú Principal");
+        btnMenuPrincipal.addActionListener(e -> {
+        new menu().setVisible(true);
+        this.dispose();
+        });
+        
+        //Panel para alinear el botón (volver al menú principal) a la izquierda
+        JPanel pnlInferior = new JPanel(
+        new FlowLayout(FlowLayout.LEFT)
+        );
+        pnlInferior.add(btnMenuPrincipal);
+        add(pnlInferior, BorderLayout.SOUTH);
+        pnlInferior.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
     }
 
     // Método para conectar la tabla con el código del CobroDAO que hicimos antes
@@ -129,14 +151,8 @@ public class CobroVista extends JFrame {
     public javax.swing.JButton getBtnConfirmarPago() { return btnConfirmarPago; }
     public javax.swing.JButton getBtnCancelar() { return btnCancelar; }
     
-    // Método temporal para probar SOLO la interfaz gráfica
+   
     public static void main(String[] args) {
-        javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                CobroVista vista = new CobroVista();
-                vista.setVisible(true);
-            }
-        });
+       
     }
 }

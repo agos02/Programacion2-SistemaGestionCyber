@@ -149,4 +149,27 @@ public class ClienteDAO {
 
         return clientes;
     }
+    
+    /**
+    * Verifica si ya existe un cliente con el DNI indicado.
+    * Retorna true si el DNI se encuentra registrado y false en caso contrario.
+    */
+    public boolean existeDni(String dni) {
+        String sql = "SELECT dni FROM clientes WHERE dni = ?";
+
+        try (Connection conexion = ConexionBD.conectar();
+            PreparedStatement ps = conexion.prepareStatement(sql)) {
+
+            ps.setString(1, dni);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();
+        }
+
+        } catch (SQLException e) {
+            System.out.println("Error al verificar DNI: " + e.getMessage());
+        return false;
+        }
+    }
+
 }
