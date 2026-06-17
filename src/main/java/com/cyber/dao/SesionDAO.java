@@ -202,7 +202,7 @@ public class SesionDAO {
     {
         double montoProductos = 0;
 
-        String sql = "SELECT SUM(dc.cantidad * p.precio) AS total FROM detalle_cobros dc INNER JOIN productos p ON dc.id_producto = p.id_producto INNER JOIN cobros c ON dc.id_cobro = c.id_cobro WHERE c.id_sesion = ?";
+        String sql = "SELECT SUM(dc.cantidad * p.precio) AS total FROM detalle_cobros dc INNER JOIN productos p ON dc.id_producto = p.id_producto INNER JOIN cobros c ON dc.id_ticket = c.id_ticket WHERE c.id_sesion = ?";
 
         Connection conexion = ConexionBD.conectar();
         try
