@@ -1,7 +1,7 @@
 package com.cyber.vistas;
 
-import com.cyber.controladores.ProductoControlador;
 import com.cyber.controladores.SesionControlador;
+import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 
 public class SesionVista
@@ -10,6 +10,8 @@ public class SesionVista
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(SesionVista.class.getName());
     
     private SesionControlador controlador;
+    private int cantidadProductos = 0;
+    private int idProducto = 0;
     
     public SesionVista()
     {
@@ -163,7 +165,7 @@ public class SesionVista
     }//GEN-LAST:event_jButton1MouseClicked
 
     private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseClicked
-        this.controlador.finalizarSesion(this.jTable1, this.jComboBox1, this.jComboBox2);
+        this.controlador.finalizarSesion(this.jTable1, this.jComboBox1, this.jComboBox2, this.idProducto, this.cantidadProductos);
     }//GEN-LAST:event_jButton2MouseClicked
 
     private void jButton3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton3MouseClicked
@@ -174,21 +176,19 @@ public class SesionVista
             System.out.println("Seleccione una sesión");
             return;
         }
+        this.idProducto = Integer.parseInt(JOptionPane.showInputDialog(this, "Ingrese el ID del Producto:"));
 
-        int idSesion = Integer.parseInt(this.jTable1.getValueAt(fila, 0).toString());
-        
-        String producto = javax.swing.JOptionPane.showInputDialog(this, "Ingrese el ID del Producto:");
-
-        if(producto == null)
+        if(this.idProducto < 0)
         {
             return;
         }
-
-        int idProducto = Integer.parseInt(producto);
         
-        ProductoControlador controlador = new ProductoControlador();
-        controlador.agregarProducto(controlador.buscarPorId(idProducto));
-
+        this.cantidadProductos = Integer.parseInt(JOptionPane.showInputDialog(null, "Ingrese la cantidad del producto:"));
+        
+        if(cantidadProductos < 0)
+        {
+            return;
+        }
         javax.swing.JOptionPane.showMessageDialog(this, "Consumo agregado correctamente");
     }//GEN-LAST:event_jButton3MouseClicked
 

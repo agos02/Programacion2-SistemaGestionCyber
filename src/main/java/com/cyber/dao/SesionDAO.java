@@ -198,24 +198,25 @@ public class SesionDAO {
         return sesiones;
     }
     
-    public double obtenerMontoProductos(int id_sesiones)
+    public double obtenerMontoProductos(int id_producto)
     {
-        double montoProductos = 0;
-
-        String sql = "SELECT SUM(dc.cantidad * p.precio) AS total FROM detalle_cobros dc INNER JOIN productos p ON dc.id_producto = p.id_producto INNER JOIN cobros c ON dc.id_cobro = c.id_cobro WHERE c.id_sesion = ?";
+        double montoProducto = 0;
+        
+        String sql = "SELECT precio FROM productos WHERE id_producto = ?";
+        //String sql = "SELECT SUM(dc.cantidad * p.precio) AS total FROM detalle_cobros dc INNER JOIN productos p ON dc.id_producto = p.id_producto INNER JOIN cobros c ON dc.id_ticket = c.id_ticket WHERE c.id_sesion = ?";
 
         Connection conexion = ConexionBD.conectar();
         try
         {
             PreparedStatement ps = conexion.prepareStatement(sql);
 
-            ps.setInt(1, id_sesiones);
+            ps.setInt(1, id_producto);
 
             ResultSet rs = ps.executeQuery();
 
             if(rs.next())
             {
-                montoProductos = rs.getDouble("total");
+                montoProducto = rs.getDouble("precio");
             }
             rs.close();
             ps.close();
@@ -225,7 +226,7 @@ public class SesionDAO {
             e.printStackTrace();
         }
         ConexionBD.cerrar(conexion);
-        return montoProductos;
+        return montoProducto;
     }
     
     public void liberarComputadora(int id_sesiones)

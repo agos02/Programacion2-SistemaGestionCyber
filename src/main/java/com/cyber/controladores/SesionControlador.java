@@ -49,7 +49,7 @@ public class SesionControlador
         actualizarTabla(tabla);
     }
     
-    public void finalizarSesion(JTable tabla, JComboBox combo1, JComboBox combo2)
+    public void finalizarSesion(JTable tabla, JComboBox combo1, JComboBox combo2, int id_producto, int cantidad_producto)
     {
         int id_sesiones;
         int fila = tabla.getSelectedRow();
@@ -91,10 +91,14 @@ public class SesionControlador
 
         double tarifaHora = 1000;
 
-        double montoSesion = (minutos / 60.0) * tarifaHora;
+        double montoSesion = 1 * tarifaHora;
         
-        double montoProductos = this.sesionDAO.obtenerMontoProductos(id_sesiones);
-
+        double montoProductos = 0.0;
+        
+        if (id_producto > 0)
+        {
+            montoProductos = this.sesionDAO.obtenerMontoProductos(id_producto) * cantidad_producto;
+        }
         double total = montoSesion + montoProductos;
 
         System.out.println("Tiempo utilizado: " + minutos + " minutos");
