@@ -11,12 +11,13 @@ import javax.swing.JComboBox;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
-public class SesionControlador{
-
+public class SesionControlador
+{
     private SesionDAO sesionDAO;
     private ComputadoraDAO computadoraDAO;
     
-    public SesionControlador() {
+    public SesionControlador()
+    {
         this.sesionDAO = new SesionDAO();
         this.computadoraDAO = new ComputadoraDAO();
     }
@@ -134,5 +135,9 @@ public class SesionControlador{
     public int obtenerIDPorNombre(String nombre)
     {
         return this.sesionDAO.obtenerIDClientePorNombre(nombre);
+    }
+    public void agregarConsumo(int idSesion,int idProducto,int cantidad)
+    {
+        //this.sesionDAO.agregarConsumo(idSesion,idProducto,cantidad);
     }
 }

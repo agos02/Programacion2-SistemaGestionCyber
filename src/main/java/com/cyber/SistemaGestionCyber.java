@@ -1,6 +1,7 @@
 package com.cyber;
 
 import com.cyber.conexion.ConexionBD;
+import com.cyber.vistas.SesionVista;
 import java.sql.Connection;
 
 public class SistemaGestionCyber {
@@ -13,7 +14,10 @@ public class SistemaGestionCyber {
         if (conexion != null) 
         {
             System.out.println("La conexión funciona correctamente.");
-            
+              java.awt.EventQueue.invokeLater(() ->
+            {
+                new SesionVista().setVisible(true);
+            });
             ConexionBD.cerrar(conexion); //Una vez probado, cerramos la conexión inmediatamente     
         } 
         else {

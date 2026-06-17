@@ -19,6 +19,7 @@ com\cyber\vistas\SesionVista$2.class
 com\cyber\controladores\SesionControlador.class
 com\cyber\modelos\Cobro.class
 com\cyber\vistas\SesionVista.class
+com\cyber\vistas\SesionVista$4.class
 com\cyber\dao\ComputadoraDAO.class
 com\cyber\dao\ProductoDAO.class
 com\cyber\dao\CobroDAO.class

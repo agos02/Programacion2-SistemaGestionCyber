@@ -433,4 +433,21 @@ public class SesionDAO {
         ConexionBD.cerrar(conexion);
         return id;
     }
+    
+    public void agregarConsumo(int idSesion,int idProducto,int cantidad)
+    {
+        String sql = "INSERT INTO detalle_cobros (id_sesion, id_producto, cantidad) VALUES (?, ?, ?)";
+
+        Connection conexion = ConexionBD.conectar();
+
+        try
+        {
+            PreparedStatement ps = conexion.prepareStatement(sql); ps.setInt(1, idSesion);  ps.setInt(2, idProducto); ps.setInt(3, cantidad); ps.executeUpdate(); ps.close();
+        }
+        catch(SQLException e)
+        {
+            e.printStackTrace();
+        }
+        ConexionBD.cerrar(conexion);
+    }
 }

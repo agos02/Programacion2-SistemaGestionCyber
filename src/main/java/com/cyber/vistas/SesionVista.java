@@ -40,6 +40,7 @@ public class SesionVista
         jButton2 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
+        jButton3 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(650, 500));
@@ -101,6 +102,14 @@ public class SesionVista
 
         jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 120, 570, 320));
 
+        jButton3.setText("Agregar Consumos");
+        jButton3.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton3MouseClicked(evt);
+            }
+        });
+        jPanel1.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 450, -1, -1));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -145,6 +154,41 @@ public class SesionVista
     private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseClicked
         this.controlador.finalizarSesion(this.jTable1, this.jComboBox1, this.jComboBox2);
     }//GEN-LAST:event_jButton2MouseClicked
+
+    private void jButton3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton3MouseClicked
+        int fila = this.jTable1.getSelectedRow();
+
+        if(fila == -1)
+        {
+            System.out.println("Seleccione una sesión");
+            return;
+        }
+
+        int idSesion = Integer.parseInt(this.jTable1.getValueAt(fila, 0).toString());
+        
+        String producto =javax.swing.JOptionPane.showInputDialog(this,"Ingrese el ID del Producto:");
+
+        if(producto == null)
+        {
+            return;
+        }
+
+        String cantidad =javax.swing.JOptionPane.showInputDialog(this,"Ingrese la cantidad:");
+
+        if(cantidad == null)
+        {
+            return;
+        }
+
+        int idProducto = Integer.parseInt(producto);
+        int cant = Integer.parseInt(cantidad);
+
+        //ConsumoControlador cc = new ConsumoControlador();
+
+        //cc.agregarConsumo(idSesion, idProducto, cant);
+
+        javax.swing.JOptionPane.showMessageDialog(this,"Consumo agregado correctamente");
+    }//GEN-LAST:event_jButton3MouseClicked
 
     private void cargarClientes()
     {
@@ -193,6 +237,7 @@ public class SesionVista
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JComboBox<String> jComboBox2;
     private javax.swing.JLabel jLabel1;
