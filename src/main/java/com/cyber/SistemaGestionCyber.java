@@ -8,6 +8,7 @@ import com.cyber.vistas.CobroVista;
 import com.cyber.vistas.menu;
 
 import com.cyber.conexion.ConexionBD;
+import com.cyber.vistas.SesionVista;
 import java.sql.Connection;
 
 public class SistemaGestionCyber {
@@ -19,9 +20,7 @@ public class SistemaGestionCyber {
         //Verificamos si la conexión funcionó
         if (conexion != null) 
         {
-            System.out.println("La conexión funciona correctamente.");
-            
-            ConexionBD.cerrar(conexion); //Una vez probado, cerramos la conexión inmediatamente     
+             System.out.println("Se pudo conectar a la base de datos.");
         } 
         else {
             System.out.println("No se pudo conectar a la base de datos.");

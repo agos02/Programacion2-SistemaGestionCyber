@@ -1,5 +1,6 @@
 package com.cyber.vistas;
 
+import com.cyber.controladores.ProductoControlador;
 import com.cyber.controladores.SesionControlador;
 import javax.swing.ListSelectionModel;
 
@@ -13,7 +14,6 @@ public class SesionVista
     public SesionVista()
     {
         initComponents();
-        this.setLocationRelativeTo(null); //para centrar la ventana en la pantalla
         this.jTable1.setRowSelectionAllowed(true);
         this.jTable1.setColumnSelectionAllowed(false);
         this.jTable1.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -41,9 +41,11 @@ public class SesionVista
         jButton2 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
-        btnMenu = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setPreferredSize(new java.awt.Dimension(650, 500));
 
         jPanel1.setMinimumSize(new java.awt.Dimension(560, 600));
         jPanel1.setPreferredSize(new java.awt.Dimension(560, 600));
@@ -63,13 +65,13 @@ public class SesionVista
         jLabel2.setText("PCs Libres");
         jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 70, -1, -1));
 
-        jButton1.setText("Iniciar Sesion");
+        jButton1.setText("Activar Sesion");
         jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jButton1MouseClicked(evt);
             }
         });
-        jPanel1.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 30, 110, -1));
+        jPanel1.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 40, 130, -1));
 
         jButton2.setText("Finalizar Sesion");
         jButton2.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -77,7 +79,7 @@ public class SesionVista
                 jButton2MouseClicked(evt);
             }
         });
-        jPanel1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 70, -1, -1));
+        jPanel1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 80, 130, -1));
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -102,23 +104,32 @@ public class SesionVista
 
         jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 120, 570, 320));
 
-        btnMenu.setText("Volver al Menú Principal");
-        btnMenu.addActionListener(this::btnMenuActionPerformed);
-        jPanel1.add(btnMenu, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 451, 240, 40));
+        jButton3.setText("Agregar Consumos");
+        jButton3.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton3MouseClicked(evt);
+            }
+        });
+        jPanel1.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 450, -1, -1));
+
+        jButton4.setText("Volver al menu principal");
+        jButton4.setToolTipText("");
+        jButton4.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton4MouseClicked(evt);
+            }
+        });
+        jPanel1.add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 450, -1, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 644, Short.MAX_VALUE)
-                .addContainerGap())
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 650, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 576, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 24, Short.MAX_VALUE))
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -155,13 +166,40 @@ public class SesionVista
         this.controlador.finalizarSesion(this.jTable1, this.jComboBox1, this.jComboBox2);
     }//GEN-LAST:event_jButton2MouseClicked
 
-    
-    //Botón que te lleva al menú principal de la aplicación
-    private void btnMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMenuActionPerformed
-        menu ventanaMenu = new menu();
-        ventanaMenu.setVisible(true);
-        this.dispose();
-    }//GEN-LAST:event_btnMenuActionPerformed
+    private void jButton3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton3MouseClicked
+        int fila = this.jTable1.getSelectedRow();
+
+        if(fila == -1)
+        {
+            System.out.println("Seleccione una sesión");
+            return;
+        }
+
+        int idSesion = Integer.parseInt(this.jTable1.getValueAt(fila, 0).toString());
+        
+        String producto = javax.swing.JOptionPane.showInputDialog(this, "Ingrese el ID del Producto:");
+
+        if(producto == null)
+        {
+            return;
+        }
+
+        int idProducto = Integer.parseInt(producto);
+        
+        ProductoControlador controlador = new ProductoControlador();
+        controlador.agregarProducto(controlador.buscarPorId(idProducto));
+
+        javax.swing.JOptionPane.showMessageDialog(this, "Consumo agregado correctamente");
+    }//GEN-LAST:event_jButton3MouseClicked
+
+    private void jButton4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton4MouseClicked
+        menu menuPrincipal = new menu();
+
+        menuPrincipal.setLocationRelativeTo(null); // Centrar ventana
+        menuPrincipal.setVisible(true);
+
+        this.dispose(); // Cierra la ventana actual
+    }//GEN-LAST:event_jButton4MouseClicked
 
     private void cargarClientes()
     {
@@ -208,9 +246,10 @@ public class SesionVista
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnMenu;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JComboBox<String> jComboBox2;
     private javax.swing.JLabel jLabel1;

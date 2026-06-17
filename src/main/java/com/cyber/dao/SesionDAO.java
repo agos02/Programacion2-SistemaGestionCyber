@@ -202,7 +202,7 @@ public class SesionDAO {
     {
         double montoProductos = 0;
 
-        String sql = "SELECT SUM(dc.cantidad * p.precio) AS total FROM detalle_cobros dc INNER JOIN productos p ON dc.id_producto = p.id_producto INNER JOIN cobros c ON dc.id_ticket = c.id_ticket WHERE c.id_sesion = ?";
+        String sql = "SELECT SUM(dc.cantidad * p.precio) AS total FROM detalle_cobros dc INNER JOIN productos p ON dc.id_producto = p.id_producto INNER JOIN cobros c ON dc.id_cobro = c.id_cobro WHERE c.id_sesion = ?";
 
         Connection conexion = ConexionBD.conectar();
         try
@@ -432,5 +432,22 @@ public class SesionDAO {
         }
         ConexionBD.cerrar(conexion);
         return id;
+    }
+    
+    public void agregarConsumo(int idSesion,int idProducto,int cantidad)
+    {
+        String sql = "INSERT INTO detalle_cobros (id_sesion, id_producto, cantidad) VALUES (?, ?, ?)";
+
+        Connection conexion = ConexionBD.conectar();
+
+        try
+        {
+            PreparedStatement ps = conexion.prepareStatement(sql); ps.setInt(1, idSesion);  ps.setInt(2, idProducto); ps.setInt(3, cantidad); ps.executeUpdate(); ps.close();
+        }
+        catch(SQLException e)
+        {
+            e.printStackTrace();
+        }
+        ConexionBD.cerrar(conexion);
     }
 }
